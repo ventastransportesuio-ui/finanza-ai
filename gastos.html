@@ -84,6 +84,34 @@ hr{
   margin-bottom:30px;
 }
 
+input,
+select{
+  width:100%;
+  max-width:400px;
+  padding:10px;
+  border:1px solid #ddd;
+  border-radius:6px;
+}
+
+button{
+  background:#2563eb;
+  color:white;
+  border:none;
+  padding:12px 20px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#1d4ed8;
+}
+
+#mensaje{
+  margin-top:15px;
+  font-weight:bold;
+  color:green;
+}
+
 </style>
 
 </head>
@@ -109,23 +137,23 @@ Control y análisis de gastos del hogar.
 <div class="stats">
 
 <div class="stat">
-<div class="value">$0</div>
+<div class="value" id="gastosTotales">$0.00</div>
 <div>Gastos Totales</div>
 </div>
 
 <div class="stat">
-<div class="value">$0</div>
-<div>Gastos Esenciales</div>
+<div class="value" id="cantidadGastos">0</div>
+<div>Transacciones</div>
 </div>
 
 <div class="stat">
-<div class="value">$0</div>
-<div>Gastos Variables</div>
+<div class="value" id="promedioGasto">$0.00</div>
+<div>Promedio</div>
 </div>
 
 <div class="stat">
-<div class="value">$0</div>
-<div>Obligaciones</div>
+<div class="value" id="categoriaPrincipal">--</div>
+<div>Categoría Principal</div>
 </div>
 
 </div>
@@ -168,98 +196,252 @@ La IA identificará patrones de consumo y oportunidades de ahorro.
 
 <hr>
 
-<h2>📈 Evolución de Gastos</h2>
-
-<div class="stat">
-Gráfico de evolución mensual (pendiente de implementación)
-</div>
-
-<hr>
-
-<h2>📂 Distribución por Categoría</h2>
-
-<table class="table">
-
-<tr>
-<th>Categoría</th>
-<th>Total</th>
-</tr>
-
-<tr>
-<td>Alimentación</td>
-<td>$0</td>
-</tr>
-
-<tr>
-<td>Vivienda</td>
-<td>$0</td>
-</tr>
-
-<tr>
-<td>Transporte</td>
-<td>$0</td>
-</tr>
-
-<tr>
-<td>Salud</td>
-<td>$0</td>
-</tr>
-
-<tr>
-<td>Educación</td>
-<td>$0</td>
-</tr>
-
-<tr>
-<td>Otros</td>
-<td>$0</td>
-</tr>
-
-</table>
-
-<hr>
-
-<h2>🧾 Facturas Procesadas</h2>
-
-<table class="table">
-
-<tr>
-<th>Fecha</th>
-<th>Proveedor</th>
-<th>Total</th>
-<th>Estado</th>
-</tr>
-
-<tr>
-<td colspan="4">
-No existen facturas registradas
-</td>
-</tr>
-
-</table>
-
-<hr>
-
 <h2>📋 Detalle de Transacciones</h2>
 
 <table class="table">
 
+<thead>
 <tr>
 <th>Fecha</th>
 <th>Comercio</th>
 <th>Categoría</th>
 <th>Monto</th>
 </tr>
+</thead>
+
+<tbody id="tablaGastos">
 
 <tr>
 <td colspan="4">
-No existen gastos registrados
+Cargando...
 </td>
 </tr>
 
+</tbody>
+
 </table>
 
+<hr>
+
+<h2>➕ Registrar Gasto</h2>
+
+<form id="formGasto">
+
+<p>
+<label>Fecha</label><br>
+<input type="date" id="fecha" required>
+</p>
+
+<p>
+<label>Comercio</label><br>
+<input type="text" id="comercio" required>
+</p>
+
+<p>
+<label>Categoría</label><br>
+<select id="categoria">
+
+<option value="Alimentación">Alimentación</option>
+<option value="Vivienda">Vivienda</option>
+<option value="Transporte">Transporte</option>
+<option value="Salud">Salud</option>
+<option value="Educación">Educación</option>
+<option value="Entretenimiento">Entretenimiento</option>
+<option value="Otros">Otros</option>
+
+</select>
+</p>
+
+<p>
+<label>Subcategoría</label><br>
+<input type="text" id="subcategoria">
+</p>
+
+<p>
+<label>Descripción</label><br>
+<input type="text" id="descripcion">
+</p>
+
+<p>
+<label>Monto</label><br>
+<input type="number" id="monto" step="0.01" required>
+</p>
+
+<p>
+<label>Medio de Pago</label><br>
+<select id="medio_pago">
+
+<option value="Efectivo">Efectivo</option>
+<option value="Tarjeta Crédito">Tarjeta Crédito</option>
+<option value="Tarjeta Débito">Tarjeta Débito</option>
+<option value="Transferencia">Transferencia</option>
+
+</select>
+</p>
+
+<button type="submit">
+Guardar gasto
+</button>
+
+</form>
+
+<div id="mensaje"></div>
+
 </div>
+
+<script>
+
+async function cargarGastos() {
+
+  const response =
+    await fetch('/api/gastos');
+
+  const gastos =
+    await response.json();
+
+  const tabla =
+    document.getElementById('tablaGastos');
+
+  let total = 0;
+
+  const categorias = {};
+
+  gastos.forEach(item => {
+
+    total += Number(item.monto || 0);
+
+    const cat =
+      item.categoria || 'Otros';
+
+    categorias[cat] =
+      (categorias[cat] || 0) + 1;
+
+  });
+
+  const promedio =
+    gastos.length > 0
+      ? total / gastos.length
+      : 0;
+
+  let categoriaPrincipal = '--';
+  let mayor = 0;
+
+  Object.keys(categorias).forEach(cat => {
+
+    if (categorias[cat] > mayor) {
+
+      mayor = categorias[cat];
+      categoriaPrincipal = cat;
+
+    }
+
+  });
+
+  document.getElementById('gastosTotales').textContent =
+    '$' + total.toFixed(2);
+
+  document.getElementById('cantidadGastos').textContent =
+    gastos.length;
+
+  document.getElementById('promedioGasto').textContent =
+    '$' + promedio.toFixed(2);
+
+  document.getElementById('categoriaPrincipal').textContent =
+    categoriaPrincipal;
+
+  if (gastos.length === 0) {
+
+    tabla.innerHTML = `
+      <tr>
+        <td colspan="4">
+          No existen gastos registrados
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  tabla.innerHTML = '';
+
+  gastos.forEach(item => {
+
+    tabla.innerHTML += `
+      <tr>
+        <td>${item.fecha || ''}</td>
+        <td>${item.comercio || ''}</td>
+        <td>${item.categoria || ''}</td>
+        <td>$${Number(item.monto || 0).toFixed(2)}</td>
+      </tr>
+    `;
+
+  });
+
+}
+
+document
+.getElementById('formGasto')
+.addEventListener('submit', async (e) => {
+
+  e.preventDefault();
+
+  const response = await fetch('/api/gastos', {
+
+    method:'POST',
+
+    headers:{
+      'Content-Type':'application/json'
+    },
+
+    body:JSON.stringify({
+
+      hogar_id:'hogar-001',
+
+      fecha:
+        document.getElementById('fecha').value,
+
+      comercio:
+        document.getElementById('comercio').value,
+
+      categoria:
+        document.getElementById('categoria').value,
+
+      subcategoria:
+        document.getElementById('subcategoria').value,
+
+      descripcion:
+        document.getElementById('descripcion').value,
+
+      monto:
+        parseFloat(
+          document.getElementById('monto').value
+        ),
+
+      moneda:'USD',
+
+      medio_pago:
+        document.getElementById('medio_pago').value,
+
+      observaciones:''
+
+    })
+
+  });
+
+  await response.json();
+
+  document.getElementById('mensaje').innerHTML =
+    '✅ Gasto guardado correctamente';
+
+  document.getElementById('formGasto').reset();
+
+  await cargarGastos();
+
+});
+
+cargarGastos();
+
+</script>
 
 </body>
 </html>
