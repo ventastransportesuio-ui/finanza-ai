@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>FINANZA AI - Inicio</title>
+<title>FINANZA AI</title>
 
 <style>
 
@@ -16,33 +16,30 @@ body{
   padding:20px;
 }
 
+.container{
+  max-width:1200px;
+  margin:auto;
+}
+
 .card{
   background:white;
   border-radius:12px;
   padding:20px;
-  max-width:1200px;
-  margin:auto;
+  margin-bottom:20px;
   box-shadow:0 2px 10px rgba(0,0,0,.1);
 }
 
 .stats{
   display:flex;
-  gap:15px;
   flex-wrap:wrap;
+  gap:15px;
 }
 
 .stat{
   background:#eef2ff;
   padding:15px;
   border-radius:10px;
-  min-width:180px;
-  text-decoration:none;
-  color:#111827;
-  transition:0.3s;
-}
-
-.stat:hover{
-  background:#dbeafe;
+  min-width:200px;
 }
 
 .value{
@@ -50,17 +47,37 @@ body{
   font-weight:bold;
 }
 
-h1{
-  margin-top:0;
+.menu{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
 }
 
-a{
+.menu a{
   text-decoration:none;
+  color:#111;
 }
 
-hr{
-  margin-top:30px;
-  margin-bottom:30px;
+.module{
+  background:#dbeafe;
+  padding:18px;
+  border-radius:10px;
+}
+
+.alert{
+  background:#ecfdf5;
+  border-left:4px solid #10b981;
+  padding:15px;
+  margin-bottom:10px;
+  border-radius:8px;
+}
+
+.warning{
+  background:#fff7ed;
+  border-left:4px solid #f97316;
+  padding:15px;
+  margin-bottom:10px;
+  border-radius:8px;
 }
 
 </style>
@@ -69,155 +86,212 @@ hr{
 
 <body>
 
+<div class="container">
+
 <div class="card">
 
 <h1>💰 FINANZA AI</h1>
 
 <p>
-Inteligencia financiera personal y familiar
+¿Cómo estamos financieramente?
 </p>
 
-<hr>
-
-<h2>👨‍👩‍👧‍👦 Resumen del Hogar</h2>
-
-<p><strong>Hogar:</strong> Finanzas Per</p>
-
-<div class="stats">
-
-<div class="stat">
-<div class="value">1</div>
-<div>Integrantes</div>
 </div>
 
-<div class="stat">
-<div class="value">1</div>
-<div>Personas con ingresos</div>
-</div>
-
-<div class="stat">
-<div class="value">0</div>
-<div>Dependientes económicos</div>
-</div>
-
-</div>
-
-<hr>
+<div class="card">
 
 <h2>📊 Resumen Financiero</h2>
 
 <div class="stats">
 
 <div class="stat">
-<div class="value">$0</div>
+<div class="value" id="ingresosTotales">$0</div>
 <div>Ingresos Totales</div>
 </div>
 
 <div class="stat">
-<div class="value">$0</div>
+<div class="value" id="gastosTotales">$0</div>
 <div>Gastos Totales</div>
 </div>
 
 <div class="stat">
-<div class="value">$0</div>
+<div class="value" id="flujoDisponible">$0</div>
+<div>Flujo Disponible</div>
+</div>
+
+<div class="stat">
+<div class="value" id="capacidadFinanciera">$0</div>
 <div>Capacidad Financiera</div>
 </div>
 
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>🏠 Información del Hogar</h2>
+
+<div class="stats">
+
 <div class="stat">
-<div class="value">$0</div>
-<div>Ahorro</div>
+<div class="value" id="totalIngresos">0</div>
+<div>Registros de Ingresos</div>
+</div>
+
+<div class="stat">
+<div class="value" id="totalGastos">0</div>
+<div>Registros de Gastos</div>
 </div>
 
 </div>
 
-<hr>
+</div>
+
+<div class="card">
+
+<h2>🤖 Oportunidades Detectadas</h2>
+
+<div id="oportunidades">
+
+<div class="alert">
+Analizando información financiera...
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
 
 <h2>⚡ Acciones Rápidas</h2>
 
-<div class="stats">
-
-<div class="stat">
-➕ Registrar ingreso
-</div>
-
-<div class="stat">
-➖ Registrar gasto
-</div>
-
-<div class="stat">
-📄 Subir documento
-</div>
-
-<div class="stat">
-🤖 Analizar finanzas
-</div>
-
-</div>
-
-<hr>
-
-<h2>📌 Módulos</h2>
-
-<div class="stats">
-
-
-<a href="mi-familia.html">
-  <div class="stat">
-    👨‍👩‍👧‍👦 Mi Familia
-  </div>
-</a>
+<div class="menu">
 
 <a href="ingresos.html">
-  <div class="stat">
-    💵 Ingresos
-  </div>
+<div class="module">
+💵 Ingresos
+</div>
 </a>
 
 <a href="gastos.html">
-  <div class="stat">
-    🛒 Gastos y Consumo
-  </div>
-</a>
-
-<a href="tarjetas.html">
-  <div class="stat">
-💳 Tarjetas
+<div class="module">
+🛒 Gastos y Consumo
 </div>
 </a>
 
-<a href="deudasypréstamos.html">
-<div class="stat">
-🏦 Deudas y Préstamos
-</div>
-</a>
-
-<a href="presupuesto y ahorro.html">
-<div class="stat">
-📈 Presupuesto y Ahorro
-</div>
-</a>
-
-<a href="inteligencia financiera.html">
-<div class="stat">
-🧠 Inteligencia Financiera
+familia.html
+<div class="module">
+👨‍👩‍👧‍👦 Mi Familia
 </div>
 </a>
 
 <a href="documentos.html">
-<div class="stat">
+<div class="module">
 📄 Documentos
 </div>
 </a>
 
-<a href="perfil y seguridad.html">
-<div class="stat">
-⚙️ Perfil y Seguridad
+<a href="tarjetas.html">
+<div class="module">
+💳 Tarjetas
+</div>
+</a>
+
+<a href="deudas.html">
+<div class="module">
+🏦 Deudas
 </div>
 </a>
 
 </div>
 
 </div>
+
+</div>
+
+<script>
+
+async function cargarDashboard() {
+
+  const ingresosResponse =
+    await fetch('/api/ingresos');
+
+  const gastosResponse =
+    await fetch('/api/gastos');
+
+  const ingresos =
+    await ingresosResponse.json();
+
+  const gastos =
+    await gastosResponse.json();
+
+  let ingresosTotales = 0;
+  let gastosTotales = 0;
+
+  ingresos.forEach(item => {
+
+    ingresosTotales +=
+      Number(item.monto_neto || 0);
+
+  });
+
+  gastos.forEach(item => {
+
+    gastosTotales +=
+      Number(item.monto || 0);
+
+  });
+
+  const flujoDisponible =
+    ingresosTotales - gastosTotales;
+
+  document.getElementById('ingresosTotales').textContent =
+    '$' + ingresosTotales.toFixed(2);
+
+  document.getElementById('gastosTotales').textContent =
+    '$' + gastosTotales.toFixed(2);
+
+  document.getElementById('flujoDisponible').textContent =
+    '$' + flujoDisponible.toFixed(2);
+
+  document.getElementById('capacidadFinanciera').textContent =
+    '$' + flujoDisponible.toFixed(2);
+
+  document.getElementById('totalIngresos').textContent =
+    ingresos.length;
+
+  document.getElementById('totalGastos').textContent =
+    gastos.length;
+
+  const oportunidades =
+    document.getElementById('oportunidades');
+
+  if (flujoDisponible > 0) {
+
+    oportunidades.innerHTML = `
+      <div class="alert">
+        ✅ Existe un flujo disponible de
+        $${flujoDisponible.toFixed(2)}
+      </div>
+    `;
+
+  } else {
+
+    oportunidades.innerHTML = `
+      <div class="warning">
+        ⚠️ Los gastos son iguales o superiores
+        a los ingresos.
+      </div>
+    `;
+
+  }
+
+}
+
+cargarDashboard();
+
+</script>
 
 </body>
 </html>
