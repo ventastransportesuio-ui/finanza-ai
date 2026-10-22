@@ -183,30 +183,24 @@ Gráfico de evolución mensual (pendiente de implementación)
 
 <table class="table">
 
+<thead>
 <tr>
+<th>Fecha</th>
 <th>Fuente</th>
-<th>Total</th>
+<th>Monto Neto</th>
+<th>Frecuencia</th>
 </tr>
+</thead>
+
+<tbody id="tablaIngresos">
 
 <tr>
-<td>Salario</td>
-<td>$0</td>
+<td colspan="4">
+Cargando...
+</td>
 </tr>
 
-<tr>
-<td>Negocio</td>
-<td>$0</td>
-</tr>
-
-<tr>
-<td>Freelance</td>
-<td>$0</td>
-</tr>
-
-<tr>
-<td>Otros</td>
-<td>$0</td>
-</tr>
+</tbody>
 
 </table>
 
@@ -342,6 +336,52 @@ document
     console.log(data);
 
 });
+
+</script>
+  <script>
+
+async function cargarIngresos() {
+
+  const response =
+    await fetch('/api/ingresos');
+
+  const ingresos =
+    await response.json();
+
+  const tabla =
+    document.getElementById('tablaIngresos');
+
+  if (ingresos.length === 0) {
+
+    tabla.innerHTML = `
+      <tr>
+        <td colspan="4">
+          No existen ingresos registrados
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  tabla.innerHTML = '';
+
+  ingresos.forEach(item => {
+
+    tabla.innerHTML += `
+      <tr>
+        <td>${item.fecha}</td>
+        <td>${item.fuente}</td>
+        <td>$${item.monto_neto}</td>
+        <td>${item.frecuencia}</td>
+      </tr>
+    `;
+
+  });
+
+}
+
+cargarIngresos();
 
 </script>
 </body>
