@@ -55,15 +55,22 @@ body{
 
 .menu a{
   text-decoration:none;
-  color:#111;
+  color:inherit;
+  display:block;
 }
 
 .module{
   background:#dbeafe;
   padding:18px;
   border-radius:10px;
+  transition:0.2s;
+  cursor:pointer;
 }
 
+.module:hover{
+  background:#bfdbfe;
+  transform:translateY(-2px);
+}
 .alert{
   background:#ecfdf5;
   border-left:4px solid #10b981;
