@@ -347,7 +347,32 @@ async function cargarIngresos() {
 
   const ingresos =
     await response.json();
+let total = 0;
 
+ingresos.forEach(item => {
+  total += Number(item.monto_neto || 0);
+});
+
+const promedio =
+  ingresos.length > 0
+    ? total / ingresos.length
+    : 0;
+
+document.getElementById('totalMes').innerText =
+  '$' + total.toFixed(2);
+
+document.getElementById('cantidadIngresos').innerText =
+  ingresos.length;
+
+document.getElementById('promedioIngresos').innerText =
+  '$' + promedio.toFixed(2);
+
+if (ingresos.length > 0) {
+
+  document.getElementById('proximoIngreso').innerText =
+    ingresos[0].fecha;
+
+}
   const tabla =
     document.getElementById('tablaIngresos');
 
