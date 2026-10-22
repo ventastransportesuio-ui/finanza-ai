@@ -76,6 +76,34 @@ hr{
   margin-bottom:30px;
 }
 
+input,
+select{
+  width:100%;
+  max-width:400px;
+  padding:10px;
+  border:1px solid #ddd;
+  border-radius:6px;
+}
+
+button{
+  background:#2563eb;
+  color:white;
+  border:none;
+  padding:12px 20px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#1d4ed8;
+}
+
+#mensaje{
+  margin-top:15px;
+  font-weight:bold;
+  color:green;
+}
+
 </style>
 
 </head>
@@ -101,7 +129,7 @@ Control de ingresos del hogar.
 <div class="stats">
 
   <div class="stat">
-    <div class="value" id="totalMes">$0</div>
+    <div class="value" id="totalMes">$0.00</div>
     <div>Total del Mes</div>
   </div>
 
@@ -111,13 +139,13 @@ Control de ingresos del hogar.
   </div>
 
   <div class="stat">
-    <div class="value" id="promedioIngresos">$0</div>
+    <div class="value" id="promedioIngresos">$0.00</div>
     <div>Promedio</div>
   </div>
 
   <div class="stat">
     <div class="value" id="proximoIngreso">--</div>
-    <div>Próximo Ingreso</div>
+    <div>Frecuencia Principal</div>
   </div>
 
 </div>
@@ -144,37 +172,6 @@ Control de ingresos del hogar.
 🏦 Importar banco
 </div>
 
-</div>
-
-<hr>
-
-<h2>🤖 Extracción IA</h2>
-
-<div class="stats">
-
-<div class="stat">
-<div class="value">0%</div>
-<div>Confianza extracción</div>
-</div>
-
-<div class="stat">
-<div class="value">0</div>
-<div>Documentos procesados</div>
-</div>
-
-</div>
-
-<p>
-La IA podrá extraer automáticamente información desde roles de pago,
-comprobantes e ingresos recurrentes del hogar.
-</p>
-
-<hr>
-
-<h2>📈 Evolución de Ingresos</h2>
-
-<div class="stat">
-Gráfico de evolución mensual (pendiente de implementación)
 </div>
 
 <hr>
@@ -206,175 +203,89 @@ Cargando...
 
 <hr>
 
-<h2>📋 Detalle de Ingresos</h2>
-<hr>
-
 <h2>➕ Registrar Ingreso</h2>
 
 <form id="formIngreso">
 
-  <p>
-    <label>Fecha</label><br>
-    <input type="date" id="fecha" required>
-  </p>
+<p>
+<label>Fecha</label><br>
+<input type="date" id="fecha" required>
+</p>
 
-  <p>
-    <label>Tipo de ingreso</label><br>
-    <input type="text" id="tipo_ingreso" required>
-  </p>
+<p>
+<label>Tipo de ingreso</label><br>
+<input type="text" id="tipo_ingreso" required>
+</p>
 
-  <p>
-    <label>Fuente</label><br>
-    <input type="text" id="fuente" required>
-  </p>
+<p>
+<label>Fuente</label><br>
+<input type="text" id="fuente" required>
+</p>
 
-  <p>
-    <label>Descripción</label><br>
-    <input type="text" id="descripcion">
-  </p>
+<p>
+<label>Descripción</label><br>
+<input type="text" id="descripcion">
+</p>
 
-  <p>
-    <label>Monto Neto</label><br>
-    <input type="number" id="monto_neto" step="0.01" required>
-  </p>
+<p>
+<label>Monto Neto</label><br>
+<input type="number" id="monto_neto" step="0.01" required>
+</p>
 
-  <p>
-    <label>Frecuencia</label><br>
-    <select id="frecuencia">
-      <option value="mensual">Mensual</option>
-      <option value="quincenal">Quincenal</option>
-      <option value="semanal">Semanal</option>
-      <option value="ocasional">Ocasional</option>
-    </select>
-  </p>
+<p>
+<label>Frecuencia</label><br>
+<select id="frecuencia">
+<option value="mensual">Mensual</option>
+<option value="quincenal">Quincenal</option>
+<option value="semanal">Semanal</option>
+<option value="ocasional">Ocasional</option>
+</select>
+</p>
 
-  <button type="submit">
-    Guardar ingreso
-  </button>
+<button type="submit">
+Guardar ingreso
+</button>
 
 </form>
 
 <div id="mensaje"></div>
-  
-<table class="table">
-
-<tr>
-<th>Fecha</th>
-<th>Fuente</th>
-<th>Monto Neto</th>
-<th>Frecuencia</th>
-</tr>
-
-<tr>
-<td colspan="4">
-No existen ingresos registrados
-</td>
-</tr>
-
-</table>
 
 </div>
+
 <script>
-
-document
-  .getElementById('formIngreso')
-  .addEventListener('submit', async (e) => {
-
-    e.preventDefault();
-
-    const response = await fetch('/api/ingresos', {
-
-      method: 'POST',
-
-      headers: {
-        'Content-Type': 'application/json'
-      },
-
-      body: JSON.stringify({
-
-        hogar_id: 'hogar-001',
-
-        integrante_id: 'integrante-001',
-
-        fecha: document.getElementById('fecha').value,
-
-        tipo_ingreso:
-          document.getElementById('tipo_ingreso').value,
-
-        fuente:
-          document.getElementById('fuente').value,
-
-        descripcion:
-          document.getElementById('descripcion').value,
-
-        monto_bruto:
-          parseFloat(
-            document.getElementById('monto_neto').value
-          ),
-
-        deducciones: 0,
-
-        monto_neto:
-          parseFloat(
-            document.getElementById('monto_neto').value
-          ),
-
-        frecuencia:
-          document.getElementById('frecuencia').value,
-
-        notas: ''
-
-      })
-
-    });
-
-    const data = await response.json();
-
-    document.getElementById('mensaje').innerHTML =
-      '✅ Ingreso guardado correctamente';
-
-    console.log(data);
-
-});
-
-</script>
-  <script>
 
 async function cargarIngresos() {
 
-  const response =
-    await fetch('/api/ingresos');
+  const response = await fetch('/api/ingresos');
+  const ingresos = await response.json();
 
-  const ingresos =
-    await response.json();
-let total = 0;
-
-ingresos.forEach(item => {
-  total += Number(item.monto_neto || 0);
-});
-
-const promedio =
-  ingresos.length > 0
-    ? total / ingresos.length
-    : 0;
-
-document.getElementById('totalMes').innerText =
-  '$' + total.toFixed(2);
-
-document.getElementById('cantidadIngresos').innerText =
-  ingresos.length;
-
-document.getElementById('promedioIngresos').innerText =
-  '$' + promedio.toFixed(2);
-
-if (ingresos.length > 0) {
-
-  document.getElementById('proximoIngreso').innerText =
-    ingresos[0].fecha;
-
-}
   const tabla =
     document.getElementById('tablaIngresos');
+
+  let total = 0;
+
+  ingresos.forEach(item => {
+    total += Number(item.monto_neto || 0);
+  });
+
+  const promedio =
+    ingresos.length > 0
+      ? total / ingresos.length
+      : 0;
+
+  document.getElementById('totalMes').textContent =
+    '$' + total.toFixed(2);
+
+  document.getElementById('cantidadIngresos').textContent =
+    ingresos.length;
+
+  document.getElementById('promedioIngresos').textContent =
+    '$' + promedio.toFixed(2);
+
+  document.getElementById('proximoIngreso').textContent =
+    ingresos.length > 0
+      ? ingresos[0].frecuencia
+      : '--';
 
   if (ingresos.length === 0) {
 
@@ -395,10 +306,10 @@ if (ingresos.length > 0) {
 
     tabla.innerHTML += `
       <tr>
-        <td>${item.fecha}</td>
-        <td>${item.fuente}</td>
-        <td>$${item.monto_neto}</td>
-        <td>${item.frecuencia}</td>
+        <td>${item.fecha || ''}</td>
+        <td>${item.fuente || ''}</td>
+        <td>$${Number(item.monto_neto || 0).toFixed(2)}</td>
+        <td>${item.frecuencia || ''}</td>
       </tr>
     `;
 
@@ -406,8 +317,73 @@ if (ingresos.length > 0) {
 
 }
 
+document
+.getElementById('formIngreso')
+.addEventListener('submit', async (e) => {
+
+  e.preventDefault();
+
+  const response = await fetch('/api/ingresos', {
+
+    method:'POST',
+
+    headers:{
+      'Content-Type':'application/json'
+    },
+
+    body:JSON.stringify({
+
+      hogar_id:'hogar-001',
+
+      integrante_id:'integrante-001',
+
+      fecha:
+        document.getElementById('fecha').value,
+
+      tipo_ingreso:
+        document.getElementById('tipo_ingreso').value,
+
+      fuente:
+        document.getElementById('fuente').value,
+
+      descripcion:
+        document.getElementById('descripcion').value,
+
+      monto_bruto:
+        parseFloat(
+          document.getElementById('monto_neto').value
+        ),
+
+      deducciones:0,
+
+      monto_neto:
+        parseFloat(
+          document.getElementById('monto_neto').value
+        ),
+
+      frecuencia:
+        document.getElementById('frecuencia').value,
+
+      notas:''
+
+    })
+
+  });
+
+  await response.json();
+
+  document.getElementById('mensaje').innerHTML =
+    '✅ Ingreso guardado correctamente';
+
+  document.getElementById('formIngreso').reset();
+
+  await cargarIngresos();
+
+});
+
 cargarIngresos();
 
 </script>
+
 </body>
 </html>
