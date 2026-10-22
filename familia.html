@@ -200,6 +200,29 @@ async function cargarFamilia() {
   const integrantes =
     await integranteResponse.json();
 
+  const totalIntegrantes =
+  integrantes.length;
+
+const personasConIngresos =
+  integrantes.filter(item =>
+    item.tipo_integrante === 'con_ingresos'
+  ).length;
+
+const dependientes =
+  integrantes.filter(item =>
+    item.tipo_integrante === 'dependiente'
+  ).length;
+
+  document.getElementById('numeroIntegrantes').textContent =
+  totalIntegrantes;
+
+document.getElementById('personasIngresos').textContent =
+  personasConIngresos;
+
+document.getElementById('dependientes').textContent =
+  dependientes;
+  
+  
   if (hogares.length > 0) {
 
     const hogar = hogares[0];
@@ -209,19 +232,6 @@ async function cargarFamilia() {
 
     document.getElementById('moneda').textContent =
       hogar.moneda || '--';
-
-    document.getElementById('numeroIntegrantes').textContent =
-      hogar.numero_integrantes || 0;
-
-    document.getElementById('personasIngresos').textContent =
-      hogar.numero_personas_con_ingresos ||
-      hogar.numero_personas_ingresos ||
-      0;
-
-    document.getElementById('dependientes').textContent =
-      hogar.numero_dependientes_economicos ||
-      hogar.numero_dependientes ||
-      0;
 
   }
 
