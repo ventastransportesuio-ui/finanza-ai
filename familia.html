@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FINANZA AI - Mi Familia</title>
+
+<style>
+
+body{
+  font-family:Arial,sans-serif;
+  background:#f4f6f9;
+  margin:0;
+  padding:20px;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+}
+
+.card{
+  background:white;
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+
+.stats{
+  display:flex;
+  flex-wrap:wrap;
+  gap:15px;
+}
+
+.stat{
+  background:#eef2ff;
+  padding:15px;
+  border-radius:10px;
+  min-width:200px;
+}
+
+.value{
+  font-size:28px;
+  font-weight:bold;
+}
+
+.table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+}
+
+.table th{
+  background:#eef2ff;
+  padding:12px;
+  text-align:left;
+}
+
+.table td{
+  padding:12px;
+  border-bottom:1px solid #ddd;
+}
+
+a{
+  text-decoration:none;
+}
+
+.alert{
+  background:#ecfdf5;
+  border-left:4px solid #10b981;
+  padding:15px;
+  border-radius:8px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>👨‍👩‍👧‍👦 Mi Familia</h1>
+
+<p>
+Gestión colaborativa del hogar.
+</p>
+
+<a href="index.html">
+⬅ Volver al inicio
+</a>
+
+</div>
+
+<div class="card">
+
+<h2>🏠 Información del Hogar</h2>
+
+<div class="stats">
+
+<div class="stat">
+<div class="value" id="nombreHogar">--</div>
+<div>Nombre del Hogar</div>
+</div>
+
+<div class="stat">
+<div class="value" id="moneda">--</div>
+<div>Moneda</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>📊 Resumen Familiar</h2>
+
+<div class="stats">
+
+<div class="stat">
+<div class="value" id="numeroIntegrantes">0</div>
+<div>Integrantes</div>
+</div>
+
+<div class="stat">
+<div class="value" id="personasIngresos">0</div>
+<div>Personas con Ingresos</div>
+</div>
+
+<div class="stat">
+<div class="value" id="dependientes">0</div>
+<div>Dependientes</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>🤝 Situación Familiar</h2>
+
+<div class="alert">
+La familia se analiza como un equipo financiero. No se realizan comparaciones individuales ni rankings entre integrantes.
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>👥 Integrantes del Hogar</h2>
+
+<table class="table">
+
+<thead>
+<tr>
+<th>Nombre</th>
+<th>Apellido</th>
+<th>Relación</th>
+<th>Tipo</th>
+<th>Activo</th>
+</tr>
+</thead>
+
+<tbody id="tablaIntegrantes">
+
+<tr>
+<td colspan="5">
+Cargando integrantes...
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+async function cargarFamilia() {
+
+  const hogarResponse =
+    await fetch('/api/hogares');
+
+  const integranteResponse =
+    await fetch('/api/integrantes');
+
+  const hogares =
+    await hogarResponse.json();
+
+  const integrantes =
+    await integranteResponse.json();
+
+  if (hogares.length > 0) {
+
+    const hogar = hogares[0];
+
+    document.getElementById('nombreHogar').textContent =
+      hogar.nombre_hogar || '--';
+
+    document.getElementById('moneda').textContent =
+      hogar.moneda || '--';
+
+    document.getElementById('numeroIntegrantes').textContent =
+      hogar.numero_integrantes || 0;
+
+    document.getElementById('personasIngresos').textContent =
+      hogar.numero_personas_con_ingresos ||
+      hogar.numero_personas_ingresos ||
+      0;
+
+    document.getElementById('dependientes').textContent =
+      hogar.numero_dependientes_economicos ||
+      hogar.numero_dependientes ||
+      0;
+
+  }
+
+  const tabla =
+    document.getElementById('tablaIntegrantes');
+
+  if (integrantes.length === 0) {
+
+    tabla.innerHTML = `
+      <tr>
+        <td colspan="5">
+          No existen integrantes registrados
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  tabla.innerHTML = '';
+
+  integrantes.forEach(item => {
+
+    tabla.innerHTML += `
+      <tr>
+        <td>${item.nombre || ''}</td>
+        <td>${item.apellido || ''}</td>
+        <td>${item.relacion_hogar || ''}</td>
+        <td>${item.tipo_integrante || ''}</td>
+        <td>${item.activo ? 'Sí' : 'No'}</td>
+      </tr>
+    `;
+
+  });
+
+}
+
+cargarFamilia();
+
+</script>
+
+</body>
+</html>
