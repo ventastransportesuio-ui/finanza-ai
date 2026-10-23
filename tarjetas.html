@@ -10,32 +10,36 @@
 <style>
 
 body{
-  font-family: Arial, sans-serif;
+  font-family:Arial,sans-serif;
   background:#f4f6f9;
   margin:0;
   padding:20px;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
 }
 
 .card{
   background:white;
   border-radius:12px;
   padding:20px;
-  max-width:1200px;
-  margin:auto;
+  margin-bottom:20px;
   box-shadow:0 2px 10px rgba(0,0,0,.1);
 }
 
 .stats{
   display:flex;
-  gap:15px;
   flex-wrap:wrap;
+  gap:15px;
 }
 
 .stat{
   background:#eef2ff;
   padding:15px;
   border-radius:10px;
-  min-width:180px;
+  min-width:200px;
 }
 
 .value{
@@ -43,17 +47,9 @@ body{
   font-weight:bold;
 }
 
-.action{
-  background:#dbeafe;
-  padding:15px;
-  border-radius:10px;
-  min-width:220px;
-}
-
 .table{
   width:100%;
   border-collapse:collapse;
-  margin-top:15px;
 }
 
 .table th{
@@ -67,21 +63,32 @@ body{
   border-bottom:1px solid #ddd;
 }
 
-.alert{
-  background:#fff7ed;
-  border-left:4px solid #f97316;
-  padding:15px;
-  border-radius:8px;
-  margin-bottom:10px;
+input,
+select{
+  width:100%;
+  max-width:400px;
+  padding:10px;
+  border:1px solid #ddd;
+  border-radius:6px;
 }
 
-a{
-  text-decoration:none;
+button{
+  background:#2563eb;
+  color:white;
+  border:none;
+  padding:12px 20px;
+  border-radius:6px;
+  cursor:pointer;
 }
 
-hr{
-  margin-top:30px;
-  margin-bottom:30px;
+button:hover{
+  background:#1d4ed8;
+}
+
+#mensaje{
+  margin-top:15px;
+  color:green;
+  font-weight:bold;
 }
 
 </style>
@@ -90,176 +97,303 @@ hr{
 
 <body>
 
+<div class="container">
+
 <div class="card">
 
 <h1>💳 Tarjetas</h1>
 
 <p>
-Gestión centralizada de tarjetas de crédito del hogar.
+Gestión centralizada de tarjetas del hogar.
 </p>
 
 <a href="index.html">
 ⬅ Volver al inicio
 </a>
 
-<hr>
+</div>
+
+<div class="card">
 
 <h2>📊 Resumen de Tarjetas</h2>
 
 <div class="stats">
 
 <div class="stat">
-<div class="value">$0</div>
+<div class="value" id="cupoTotal">$0</div>
 <div>Cupo Total</div>
 </div>
 
 <div class="stat">
-<div class="value">$0</div>
-<div>Saldo Actual</div>
+<div class="value" id="saldoUtilizado">$0</div>
+<div>Saldo Utilizado</div>
 </div>
 
 <div class="stat">
-<div class="value">$0</div>
+<div class="value" id="cupoDisponible">$0</div>
 <div>Cupo Disponible</div>
 </div>
 
 <div class="stat">
-<div class="value">0</div>
-<div>Tarjetas Registradas</div>
+<div class="value" id="pagoMinimo">$0</div>
+<div>Pago Mínimo</div>
 </div>
 
 </div>
 
-<hr>
-
-<h2>⚡ Acciones</h2>
-
-<div class="stats">
-
-<div class="action">
-➕ Registrar tarjeta
 </div>
 
-<div class="action">
-💳 Registrar compra
+<div class="card">
+
+<h2>➕ Registrar Tarjeta</h2>
+
+<form id="formTarjeta">
+
+<p>
+<label>Entidad Financiera</label><br>
+<input type="text" id="entidad_financiera" required>
+</p>
+
+<p>
+<label>Nombre Tarjeta</label><br>
+<input type="text" id="nombre_tarjeta" required>
+</p>
+
+<p>
+<label>Titular</label><br>
+<input type="text" id="titular" required>
+</p>
+
+<p>
+<label>Cupo</label><br>
+<input type="number" id="cupo" required>
+</p>
+
+<p>
+<label>Saldo Actual</label><br>
+<input type="number" id="saldo_actual" required>
+</p>
+
+<p>
+<label>Cupo Disponible</label><br>
+<input type="number" id="cupo_disponible" required>
+</p>
+
+<p>
+<label>Pago Mínimo</label><br>
+<input type="number" id="pago_minimo" required>
+</p>
+
+<p>
+<label>Pago Total</label><br>
+<input type="number" id="pago_total" required>
+</p>
+
+<p>
+<label>Fecha Corte</label><br>
+<input type="date" id="fecha_corte">
+</p>
+
+<p>
+<label>Fecha Pago</label><br>
+<input type="date" id="fecha_pago">
+</p>
+
+<p>
+<label>Tasa Interés (%)</label><br>
+<input type="number" step="0.01" id="tasa_interes">
+</p>
+
+<button type="submit">
+Guardar Tarjeta
+</button>
+
+</form>
+
+<div id="mensaje"></div>
+
 </div>
 
-<div class="action">
-📄 Importar estado de cuenta
-</div>
-
-<div class="action">
-🤖 Analizar endeudamiento
-</div>
-
-</div>
-
-<hr>
-
-<h2>🤖 Alertas Inteligentes</h2>
-
-<div class="alert">
-No existen alertas registradas.
-</div>
-
-<div class="alert">
-La IA analizará cupos, pagos mínimos, intereses y riesgo de sobreendeudamiento.
-</div>
-
-<hr>
+<div class="card">
 
 <h2>💳 Tarjetas Registradas</h2>
 
 <table class="table">
 
+<thead>
 <tr>
 <th>Entidad</th>
 <th>Tarjeta</th>
 <th>Cupo</th>
 <th>Saldo</th>
 <th>Disponible</th>
-</tr>
-
-<tr>
-<td colspan="5">
-No existen tarjetas registradas
-</td>
-</tr>
-
-</table>
-
-<hr>
-
-<h2>📅 Próximos Pagos</h2>
-
-<table class="table">
-
-<tr>
-<th>Tarjeta</th>
 <th>Pago Mínimo</th>
-<th>Pago Total</th>
-<th>Fecha Corte</th>
-<th>Fecha Pago</th>
 </tr>
+</thead>
+
+<tbody id="tablaTarjetas">
 
 <tr>
-<td colspan="5">
-No existen pagos programados
+<td colspan="6">
+Cargando...
 </td>
 </tr>
 
-</table>
-
-<hr>
-
-<h2>🛒 Compras Diferidas</h2>
-
-<table class="table">
-
-<tr>
-<th>Tarjeta</th>
-<th>Descripción</th>
-<th>Saldo Diferido</th>
-<th>Cuotas Pendientes</th>
-</tr>
-
-<tr>
-<td colspan="4">
-No existen compras diferidas registradas
-</td>
-</tr>
+</tbody>
 
 </table>
 
-<hr>
-
-<h2>📈 Indicadores Financieros</h2>
-
-<div class="stats">
-
-<div class="stat">
-<div class="value">0%</div>
-<div>Uso de Cupo</div>
-</div>
-
-<div class="stat">
-<div class="value">$0</div>
-<div>Pago Mínimo Total</div>
-</div>
-
-<div class="stat">
-<div class="value">$0</div>
-<div>Pago Total Requerido</div>
-</div>
-
-<div class="stat">
-<div class="value">0%</div>
-<div>Tasa Promedio</div>
 </div>
 
 </div>
 
-</div>
+<script>
+
+async function cargarTarjetas() {
+
+  const response =
+    await fetch('/api/tarjetas');
+
+  const tarjetas =
+    await response.json();
+
+  let cupoTotal = 0;
+  let saldoUtilizado = 0;
+  let cupoDisponible = 0;
+  let pagoMinimo = 0;
+
+  tarjetas.forEach(item => {
+
+    cupoTotal += Number(item.cupo || 0);
+
+    saldoUtilizado += Number(item.saldo_actual || 0);
+
+    cupoDisponible += Number(item.cupo_disponible || 0);
+
+    pagoMinimo += Number(item.pago_minimo || 0);
+
+  });
+
+  document.getElementById('cupoTotal').textContent =
+    '$' + cupoTotal.toFixed(2);
+
+  document.getElementById('saldoUtilizado').textContent =
+    '$' + saldoUtilizado.toFixed(2);
+
+  document.getElementById('cupoDisponible').textContent =
+    '$' + cupoDisponible.toFixed(2);
+
+  document.getElementById('pagoMinimo').textContent =
+    '$' + pagoMinimo.toFixed(2);
+
+  const tabla =
+    document.getElementById('tablaTarjetas');
+
+  if (tarjetas.length === 0) {
+
+    tabla.innerHTML = `
+      <tr>
+        <td colspan="6">
+          No existen tarjetas registradas
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  tabla.innerHTML = '';
+
+  tarjetas.forEach(item => {
+
+    tabla.innerHTML += `
+      <tr>
+        <td>${item.entidad_financiera}</td>
+        <td>${item.nombre_tarjeta}</td>
+        <td>$${item.cupo}</td>
+        <td>$${item.saldo_actual}</td>
+        <td>$${item.cupo_disponible}</td>
+        <td>$${item.pago_minimo}</td>
+      </tr>
+    `;
+
+  });
+
+}
+
+document
+.getElementById('formTarjeta')
+.addEventListener('submit', async (e) => {
+
+  e.preventDefault();
+
+  await fetch('/api/tarjetas', {
+
+    method:'POST',
+
+    headers:{
+      'Content-Type':'application/json'
+    },
+
+    body:JSON.stringify({
+
+      hogar_id:'hogar-001',
+
+      entidad_financiera:
+        document.getElementById('entidad_financiera').value,
+
+      nombre_tarjeta:
+        document.getElementById('nombre_tarjeta').value,
+
+      titular:
+        document.getElementById('titular').value,
+
+      cupo:
+        Number(document.getElementById('cupo').value),
+
+      saldo_actual:
+        Number(document.getElementById('saldo_actual').value),
+
+      cupo_disponible:
+        Number(document.getElementById('cupo_disponible').value),
+
+      pago_minimo:
+        Number(document.getElementById('pago_minimo').value),
+
+      pago_total:
+        Number(document.getElementById('pago_total').value),
+
+      fecha_corte:
+        document.getElementById('fecha_corte').value,
+
+      fecha_pago:
+        document.getElementById('fecha_pago').value,
+
+      tasa_interes:
+        Number(document.getElementById('tasa_interes').value),
+
+      saldo_diferido:0,
+
+      cuotas_pendientes:0,
+
+      observaciones:''
+
+    })
+
+  });
+
+  document.getElementById('mensaje').innerHTML =
+    '✅ Tarjeta registrada correctamente';
+
+  document.getElementById('formTarjeta').reset();
+
+  await cargarTarjetas();
+
+});
+
+cargarTarjetas();
+
+</script>
 
 </body>
 </html>
