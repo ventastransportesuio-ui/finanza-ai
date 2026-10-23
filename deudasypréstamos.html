@@ -117,22 +117,22 @@ Control y análisis de las obligaciones financieras del hogar.
 <div class="stats">
 
 <div class="stat">
-<div class="value">$0</div>
+<div class="value" id="deudaTotal">$0</div>
 <div>Deuda Total</div>
 </div>
 
 <div class="stat">
-<div class="value">$0</div>
+<div class="value" id="cuotasMensuales">$0</div>
 <div>Cuotas Mensuales</div>
 </div>
 
 <div class="stat">
-<div class="value">0</div>
+<div class="value" id="prestamosActivos">0</div>
 <div>Préstamos Activos</div>
 </div>
 
 <div class="stat">
-<div class="value">$0</div>
+<div class="value" id="proximoPago">--</div>
 <div>Próximo Pago</div>
 </div>
 
@@ -180,18 +180,25 @@ La IA propondrá estrategias Avalancha, Bola de Nieve y Alivio de Flujo cuando e
 
 <table class="table">
 
+<thead>
 <tr>
 <th>Institución</th>
-<th>Tipo</th>
-<th>Valor Cuota</th>
-<th>Próximo Pago</th>
+<th>Monto Original</th>
+<th>Saldo Actual</th>
+<th>Cuotas Pagadas</th>
+<th>Cuotas Restantes</th>
 </tr>
+</thead>
+
+<tbody id="tablaDetalle">
 
 <tr>
-<td colspan="4">
-No existen pagos programados
+<td colspan="5">
+Cargando...
 </td>
 </tr>
+
+</tbody>
 
 </table>
 
@@ -201,6 +208,7 @@ No existen pagos programados
 
 <table class="table">
 
+<thead>
 <tr>
 <th>Institución</th>
 <th>Tipo</th>
@@ -208,12 +216,17 @@ No existen pagos programados
 <th>Tasa</th>
 <th>Cuotas Restantes</th>
 </tr>
+</thead>
+
+<tbody id="tablaPrestamos">
 
 <tr>
 <td colspan="5">
-No existen préstamos registrados
+Cargando...
 </td>
 </tr>
+
+</tbody>
 
 </table>
 
@@ -301,6 +314,93 @@ No existen deudas registradas
 </table>
 
 </div>
+<script>
 
+async function cargarDeudas() {
+
+  const response =
+    await fetch('/api/deudas');
+
+  const deudas =
+    await response.json();
+
+  let deudaTotal = 0;
+  let cuotasMensuales = 0;
+
+  deudas.forEach(item => {
+
+    deudaTotal +=
+      Number(item.saldo_actual || 0);
+
+    cuotasMensuales +=
+      Number(item.valor_cuota || 0);
+
+  });
+
+  document.getElementById('deudaTotal').textContent =
+    '$' + deudaTotal.toFixed(2);
+
+  document.getElementById('cuotasMensuales').textContent =
+    '$' + cuotasMensuales.toFixed(2);
+
+  document.getElementById('prestamosActivos').textContent =
+    deudas.length;
+
+  document.getElementById('proximoPago').textContent =
+    deudas.length > 0
+      ? deudas[0].fecha_proximo_pago
+      : '--';
+
+  const tablaPagos =
+    document.getElementById('tablaPagos');
+
+  const tablaPrestamos =
+    document.getElementById('tablaPrestamos');
+
+  const tablaDetalle =
+    document.getElementById('tablaDetalle');
+
+  tablaPagos.innerHTML = '';
+  tablaPrestamos.innerHTML = '';
+  tablaDetalle.innerHTML = '';
+
+  deudas.forEach(item => {
+
+    tablaPagos.innerHTML += `
+      <tr>
+        <td>${item.institucion}</td>
+        <td>${item.tipo_deuda}</td>
+        <td>$${item.valor_cuota}</td>
+        <td>${item.fecha_proximo_pago}</td>
+      </tr>
+    `;
+
+    tablaPrestamos.innerHTML += `
+      <tr>
+        <td>${item.institucion}</td>
+        <td>${item.tipo_deuda}</td>
+        <td>$${item.saldo_actual}</td>
+        <td>${item.tasa_interes}%</td>
+        <td>${item.cuotas_restantes}</td>
+      </tr>
+    `;
+
+    tablaDetalle.innerHTML += `
+      <tr>
+        <td>${item.institucion}</td>
+        <td>$${item.monto_original}</td>
+        <td>$${item.saldo_actual}</td>
+        <td>${item.cuotas_pagadas}</td>
+        <td>${item.cuotas_restantes}</td>
+      </tr>
+    `;
+
+  });
+
+}
+
+cargarDeudas();
+
+</script>
 </body>
 </html>
