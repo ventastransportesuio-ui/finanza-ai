@@ -71,21 +71,31 @@
     return archivo || "index.html";
   }
 
-  function obtenerPaginaActual() {
-    const archivoActual = obtenerArchivoActual();
+function normalizarArchivo(nombre) {
+  return decodeURIComponent(nombre || "")
+    .toLowerCase()
+    .replace(/\.html$/, "")
+    .replace(/\s+/g, "");
+}
 
-    return (
-      paginas.find(function (pagina) {
-        return pagina.archivo === archivoActual;
-      }) || paginas[0]
-    );
-  }
+function obtenerPaginaActual() {
+  const archivoActual = normalizarArchivo(obtenerArchivoActual());
+
+  return (
+    paginas.find(function (pagina) {
+      return normalizarArchivo(pagina.archivo) === archivoActual;
+    }) || paginas[0]
+  );
+}
 
   function crearNavegacion(paginaActual) {
     return paginas
       .map(function (pagina, indice) {
-        const activa =
-          pagina.archivo === paginaActual.archivo ? " active" : "";
+       const activa =
+  normalizarArchivo(pagina.archivo) ===
+  normalizarArchivo(paginaActual.archivo)
+    ? " active"
+    : "";
 
         const separador =
           indice === paginas.length - 2
