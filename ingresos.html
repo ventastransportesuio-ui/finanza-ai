@@ -2,392 +2,1092 @@
 <html lang="es">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>FINANZA AI - Ingresos</title>
+  <title>FINANZA AI - Ingresos</title>
 
-<style>
+  <style>
+    .income-dashboard{
+      display:grid;
+      grid-template-columns:minmax(0, 2fr) minmax(280px, .85fr);
+      gap:18px;
+    }
 
-body{
-  font-family: Arial, sans-serif;
-  background:#f4f6f9;
-  margin:0;
-  padding:20px;
-}
+    .income-main,
+    .income-side{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
 
-.card{
-  background:white;
-  border-radius:12px;
-  padding:20px;
-  max-width:1200px;
-  margin:auto;
-  box-shadow:0 2px 10px rgba(0,0,0,.1);
-}
+    .income-top-grid{
+      display:grid;
+      grid-template-columns:minmax(0, 1.35fr) minmax(260px, .8fr);
+      gap:18px;
+    }
 
-.stats{
-  display:flex;
-  gap:15px;
-  flex-wrap:wrap;
-}
+    .income-primary-card{
+      min-height:210px;
+      padding:20px;
+      border:1px solid #dce7f7;
+      border-radius:14px;
+      background:linear-gradient(135deg, #f5fbff, #eef7ff);
+    }
 
-.stat{
-  background:#eef2ff;
-  padding:15px;
-  border-radius:10px;
-  min-width:180px;
-}
+    .income-primary-label{
+      margin-bottom:8px;
+      color:#66738a;
+      font-size:12px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.3px;
+    }
 
-.value{
-  font-size:28px;
-  font-weight:bold;
-}
+    .income-primary-value{
+      color:#17233a;
+      font-size:38px;
+      font-weight:700;
+      line-height:1.1;
+    }
 
-.table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:20px;
-}
+    .income-trend{
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      margin-top:8px;
+      padding:5px 9px;
+      border-radius:999px;
+      background:#dff5e9;
+      color:#149a5b;
+      font-size:11px;
+      font-weight:700;
+    }
 
-.table th{
-  background:#eef2ff;
-  text-align:left;
-  padding:12px;
-}
+    .income-chart{
+      height:82px;
+      margin-top:18px;
+      position:relative;
+      overflow:hidden;
+    }
 
-.table td{
-  padding:12px;
-  border-bottom:1px solid #ddd;
-}
+    .income-chart svg{
+      width:100%;
+      height:100%;
+      overflow:visible;
+    }
 
-.action{
-  background:#dbeafe;
-  padding:15px;
-  border-radius:10px;
-  min-width:220px;
-}
+    .source-card{
+      padding:20px;
+      border:1px solid #e4eaf2;
+      border-radius:14px;
+      background:#fff;
+    }
 
-a{
-  text-decoration:none;
-}
+    .donut-wrap{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin:16px 0;
+    }
 
-hr{
-  margin-top:30px;
-  margin-bottom:30px;
-}
+    .donut{
+      width:116px;
+      height:116px;
+      border-radius:50%;
+      background:conic-gradient(
+        #2f6fed 0deg 360deg,
+        #e7effe 360deg
+      );
+      position:relative;
+    }
 
-input,
-select{
-  width:100%;
-  max-width:400px;
-  padding:10px;
-  border:1px solid #ddd;
-  border-radius:6px;
-}
+    .donut::after{
+      content:"";
+      position:absolute;
+      inset:22px;
+      border-radius:50%;
+      background:#fff;
+    }
 
-button{
-  background:#2563eb;
-  color:white;
-  border:none;
-  padding:12px 20px;
-  border-radius:6px;
-  cursor:pointer;
-}
+    .donut-center{
+      position:absolute;
+      inset:0;
+      z-index:1;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+    }
 
-button:hover{
-  background:#1d4ed8;
-}
+    .donut-center span:first-child{
+      color:#17233a;
+      font-size:17px;
+    }
 
-#mensaje{
-  margin-top:15px;
-  font-weight:bold;
-  color:green;
-}
+    .donut-center span:last-child{
+      margin-top:2px;
+      color:#66738a;
+      font-size:9px;
+      text-transform:uppercase;
+    }
 
-</style>
-  
-<link rel="stylesheet" href="./assets/styles.css">
+    .source-list{
+      display:flex;
+      flex-direction:column;
+      gap:9px;
+    }
 
-</head>
+    .source-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      color:#66738a;
+      font-size:11px;
+    }
+
+    .source-name{
+      display:flex;
+      align-items:center;
+      gap:7px;
+    }
+
+    .source-dot{
+      width:8px;
+      height:8px;
+      flex:0 0 8px;
+      border-radius:50%;
+      background:#2f6fed;
+    }
+
+    .summary-mini-grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .summary-mini{
+      padding:13px;
+      border:1px solid #e4eaf2;
+      border-radius:11px;
+      background:#fff;
+    }
+
+    .summary-mini-value{
+      color:#17233a;
+      font-size:18px;
+      font-weight:700;
+    }
+
+    .summary-mini-label{
+      margin-top:4px;
+      color:#66738a;
+      font-size:10px;
+      font-weight:600;
+    }
+
+    .section-card{
+      padding:18px 20px;
+      border:1px solid #e4eaf2;
+      border-radius:14px;
+      background:#fff;
+    }
+
+    .section-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    .section-header h2{
+      margin:0;
+    }
+
+    .section-link{
+      color:#2f6fed;
+      font-size:11px;
+      font-weight:700;
+      text-decoration:none;
+    }
+
+    .income-actions{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0, 1fr));
+      gap:12px;
+    }
+
+    .income-action{
+      min-height:116px;
+      padding:15px;
+      border:1px solid #e4eaf2;
+      border-radius:12px;
+      background:#fff;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    .income-action:hover{
+      border-color:#b9cef8;
+      box-shadow:0 8px 18px rgba(47,111,237,.10);
+      transform:translateY(-2px);
+    }
+
+    .income-action-icon{
+      width:34px;
+      height:34px;
+      margin-bottom:10px;
+      border-radius:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#e7effe;
+      color:#2f6fed;
+      font-size:16px;
+      font-weight:700;
+    }
+
+    .income-action-title{
+      color:#17233a;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .income-action-copy{
+      margin-top:5px;
+      color:#66738a;
+      font-size:10px;
+      line-height:1.4;
+    }
+
+    .side-highlight{
+      padding:18px;
+      border:1px solid #dce7f7;
+      border-radius:14px;
+      background:#f4f9ff;
+    }
+
+    .side-highlight-label{
+      color:#66738a;
+      font-size:11px;
+      font-weight:700;
+    }
+
+    .side-highlight-value{
+      margin-top:8px;
+      color:#17233a;
+      font-size:28px;
+      font-weight:700;
+    }
+
+    .side-highlight-note{
+      margin-top:6px;
+      color:#149a5b;
+      font-size:11px;
+      font-weight:600;
+    }
+
+    .distribution-list{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      margin-top:14px;
+    }
+
+    .distribution-item{
+      display:grid;
+      grid-template-columns:72px 1fr 46px;
+      align-items:center;
+      gap:9px;
+      font-size:10.5px;
+    }
+
+    .distribution-name{
+      color:#66738a;
+    }
+
+    .distribution-track{
+      height:7px;
+      overflow:hidden;
+      border-radius:999px;
+      background:#edf1f7;
+    }
+
+    .distribution-bar{
+      height:100%;
+      border-radius:999px;
+      background:#2f6fed;
+    }
+
+    .distribution-value{
+      color:#17233a;
+      text-align:right;
+      font-weight:700;
+    }
+
+    .recommendation-box{
+      padding:16px;
+      border:1px solid #bfead4;
+      border-radius:12px;
+      background:#ecfdf5;
+    }
+
+    .recommendation-title{
+      color:#116f43;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .recommendation-copy{
+      margin-top:7px;
+      color:#357158;
+      font-size:11px;
+      line-height:1.5;
+    }
+
+    .register-panel{
+      display:none;
+      margin-top:16px;
+      padding-top:18px;
+      border-top:1px solid #e4eaf2;
+    }
+
+    .register-panel.open{
+      display:block;
+    }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:14px;
+    }
+
+    .form-field{
+      min-width:0;
+    }
+
+    .form-field.full{
+      grid-column:1 / -1;
+    }
+
+    .form-actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top:16px;
+    }
+
+    .status-message{
+      min-height:20px;
+      margin-top:12px;
+      color:#149a5b;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .empty-cell{
+      padding:28px !important;
+      color:#66738a !important;
+      text-align:center;
+    }
+
+    @media (max-width:1100px){
+      .income-dashboard{
+        grid-template-columns:1fr;
+      }
+
+      .income-side{
+        display:grid;
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width:820px){
+      .income-top-grid,
+      .income-side{
+        grid-template-columns:1fr;
+      }
+
+      .income-actions{
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width:580px){
+      .summary-mini-grid,
+      .income-actions,
+      .form-grid{
+        grid-template-columns:1fr;
+      }
+
+      .form-field.full{
+        grid-column:auto;
+      }
+
+      .income-primary-value{
+        font-size:32px;
+      }
+    }
+  </style>
+
+  <link rel="stylesheet" href
 
 <body>
 
-<div class="card">
+  <div class="income-dashboard">
 
-<h1>💵 Ingresos</h1>
+    <section class="income-main">
 
-<p>
-Control de ingresos del hogar.
-</p>
+      <div class="income-top-grid">
 
-<a href="index.html">
-⬅ Volver al inicio
-</a>
+        <article class="income-primary-card">
+          <div class="income-primary-label">Ingresos del mes</div>
 
-<hr>
+          <div class="income-primary-value" id="totalMes">$0.00</div>
 
-<h2>📊 Resumen del Mes</h2>
+          <div class="income-trend">
+            ↑ Información actualizada desde D1
+          </div>
 
-<div class="stats">
+          <div class="income-chart" aria-label="Evolución visual de ingresos">
+            <svg viewBox="0 0 420 100" role="img">
+              <defs>
+                <linearGradient id="incomeArea" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#2f6fed" stop-opacity=".24"/>
+                  <stop offset="100%" stop-color="#2f6fed" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
 
-  <div class="stat">
-    <div class="value" id="totalMes">$0.00</div>
-    <div>Total del Mes</div>
+              <path
+                d="M0,83 C55,79 72,66 112,68 C162,71 176,49 220,54 C267,59 280,35 330,41 C372,46 387,24 420,29 L420,100 L0,100 Z"
+                fill="url(#incomeArea)">
+              </path>
+
+              <path
+                d="M0,83 C55,79 72,66 112,68 C162,71 176,49 220,54 C267,59 280,35 330,41 C372,46 387,24 420,29"
+                fill="none"
+                stroke="#2f6fed"
+                stroke-width="3"
+                stroke-linecap="round">
+              </path>
+            </svg>
+          </div>
+
+          <div class="summary-mini-grid">
+            <div class="summary-mini">
+              <div class="summary-mini-value" id="cantidadIngresos">0</div>
+              <div class="summary-mini-label">Ingresos registrados</div>
+            </div>
+
+            <div class="summary-mini">
+              <div class="summary-mini-value" id="promedioIngresos">$0.00</div>
+              <div class="summary-mini-label">Promedio</div>
+            </div>
+
+            <div class="summary-mini">
+              <div class="summary-mini-value" id="frecuenciaPrincipal">--</div>
+              <div class="summary-mini-label">Frecuencia principal</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="source-card">
+          <div class="section-header">
+            <h2>Resumen por fuente</h2>
+          </div>
+
+          <div class="donut-wrap">
+            <div class="donut" id="sourceDonut">
+              <div class="donut-center">
+                <span id="donutTotal">$0</span>
+                <span>Total</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="source-list" id="sourceList">
+            <div class="source-row">
+              <span class="source-name">
+                <span class="source-dot"></span>
+                Sin datos
+              </span>
+              <strong>$0.00</strong>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <article class="section-card">
+        <div class="section-header">
+          <h2>Detalle de ingresos</h2>
+          <span class="section-link" id="detailCount">0 registros</span>
+        </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Fuente</th>
+              <th>Tipo</th>
+              <th>Monto neto</th>
+              <th>Frecuencia</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+
+          <tbody id="tablaIngresos">
+            <tr>
+              <td colspan="6" class="empty-cell">Cargando ingresos...</td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+
+      <article class="section-card">
+        <div class="section-header">
+          <h2>Agregar ingreso</h2>
+          <button
+            type="button"
+            class="secondary-button"
+            id="toggleFormButton">
+            + Registrar ingreso
+          </button>
+        </div>
+
+        <div class="income-actions">
+          <div class="income-action" id="manualAction">
+            <div class="income-action-icon">+</div>
+            <div class="income-action-title">Registrar ingreso</div>
+            <div class="income-action-copy">
+              Ingresa manualmente un nuevo ingreso.
+            </div>
+          </div>
+
+          <div class="income-action">
+            <div class="income-action-icon">▧</div>
+            <div class="income-action-title">Subir rol de pagos</div>
+            <div class="income-action-copy">
+              La IA extraerá la información automáticamente.
+            </div>
+          </div>
+
+          <div class="income-action">
+            <div class="income-action-icon">▣</div>
+            <div class="income-action-title">Subir comprobante</div>
+            <div class="income-action-copy">
+              Facturas, transferencias y comprobantes.
+            </div>
+          </div>
+
+          <div class="income-action">
+            <div class="income-action-icon">↻</div>
+            <div class="income-action-title">Importar desde banco</div>
+            <div class="income-action-copy">
+              Conecta o carga movimientos bancarios.
+            </div>
+          </div>
+        </div>
+
+        <div class="register-panel" id="registerPanel">
+
+          <form id="formIngreso">
+
+            <div class="form-grid">
+
+              <div class="form-field">
+                <label for="fecha">Fecha</label>
+                <input type="date" id="fecha" required>
+              </div>
+
+              <div class="form-field">
+                <label for="tipo_ingreso">Tipo de ingreso</label>
+                <input
+                  type="text"
+                  id="tipo_ingreso"
+                  placeholder="Ej. Salario"
+                  required>
+              </div>
+
+              <div class="form-field">
+                <label for="fuente">Fuente</label>
+                <input
+                  type="text"
+                  id="fuente"
+                  placeholder="Ej. Empresa"
+                  required>
+              </div>
+
+              <div class="form-field">
+                <label for="monto_neto">Monto neto</label>
+                <input
+                  type="number"
+                  id="monto_neto"
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                  required>
+              </div>
+
+              <div class="form-field">
+                <label for="frecuencia">Frecuencia</label>
+                <select id="frecuencia">
+                  <option value="mensual">Mensual</option>
+                  <option value="quincenal">Quincenal</option>
+                  <option value="semanal">Semanal</option>
+                  <option value="ocasional">Ocasional</option>
+                </select>
+              </div>
+
+              <div class="form-field full">
+                <label for="descripcion">Descripción</label>
+                <input
+                  type="text"
+                  id="descripcion"
+                  placeholder="Descripción opcional">
+              </div>
+
+            </div>
+
+            <div class="form-actions">
+              <button type="submit">Guardar ingreso</button>
+
+              <button
+                type="button"
+                class="secondary-button"
+                id="cancelFormButton">
+                Cancelar
+              </button>
+            </div>
+
+          </form>
+
+          <div id="mensaje" class="status-message"></div>
+
+        </div>
+      </article>
+
+    </section>
+
+    <aside class="income-side">
+
+      <article class="side-highlight">
+        <div class="side-highlight-label">Tu ingreso mensual</div>
+        <div class="side-highlight-value" id="sideMonthlyIncome">$0.00</div>
+        <div class="side-highlight-note">
+          Datos consolidados desde tus registros
+        </div>
+      </article>
+
+      <article class="section-card">
+        <div class="section-header">
+          <h2>Distribución de ingresos</h2>
+        </div>
+
+        <div class="distribution-list" id="distributionList">
+          <div class="distribution-item">
+            <span class="distribution-name">Sin datos</span>
+            <div class="distribution-track">
+              <div class="distribution-bar" style="width:0%"></div>
+            </div>
+            <span class="distribution-value">0%</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="recommendation-box">
+        <div class="recommendation-title">
+          Recomendación FINANZA AI
+        </div>
+
+        <div class="recommendation-copy" id="incomeRecommendation">
+          Registra tus ingresos recurrentes para construir una visión más
+          precisa de la capacidad financiera del hogar.
+        </div>
+      </article>
+
+      <article class="section-card">
+        <div class="section-header">
+          <h2>Asistente</h2>
+        </div>
+
+        <p class="muted">
+          Utiliza los datos registrados para analizar estabilidad,
+          recurrencia y próximos ingresos.
+        </p>
+
+        <button type="button" class="secondary-button">
+          Abrir asistente
+        </button>
+      </article>
+
+    </aside>
+
   </div>
 
-  <div class="stat">
-    <div class="value" id="cantidadIngresos">0</div>
-    <div>Ingresos Registrados</div>
-  </div>
+  <script>
+    const moneda = new Intl.NumberFormat("es-EC", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2
+    });
+
+    function normalizarFuente(valor) {
+      const fuente = String(valor || "Otros").trim();
+      return fuente || "Otros";
+    }
+
+    function frecuenciaMasComun(ingresos) {
+      const contador = {};
+
+      ingresos.forEach((item) => {
+        const frecuencia = item.frecuencia || "Sin definir";
+        contador[frecuencia] = (contador[frecuencia] || 0) + 1;
+      });
+
+      const entradas = Object.entries(contador);
+
+      if (entradas.length === 0) {
+        return "--";
+      }
+
+      entradas.sort((a, b) => b[1] - a[1]);
+
+      return entradas[0][0];
+    }
+
+    function agruparPorFuente(ingresos) {
+      const fuentes = {};
+
+      ingresos.forEach((item) => {
+        const fuente = normalizarFuente(item.fuente);
+        const monto = Number(item.monto_neto || 0);
+
+        fuentes[fuente] = (fuentes[fuente] || 0) + monto;
+      });
+
+      return fuentes;
+    }
+
+    function crearColores(cantidad) {
+      const colores = [
+        "#2f6fed",
+        "#149a5b",
+        "#7c5ce0",
+        "#db9a2c",
+        "#e24b5b",
+        "#0ea5a8"
+      ];
+
+      return Array.from(
+        { length: cantidad },
+        (_, indice) => colores[indice % colores.length]
+      );
+    }
+
+    function actualizarFuentes(fuentes, total) {
+      const sourceList = document.getElementById("sourceList");
+      const distributionList =
+        document.getElementById("distributionList");
+      const sourceDonut = document.getElementById("sourceDonut");
+
+      const entradas = Object.entries(fuentes)
+        .sort((a, b) => b[1] - a[1]);
+
+      document.getElementById("donutTotal").textContent =
+        moneda.format(total);
+
+      if (entradas.length === 0 || total <= 0) {
+        sourceList.innerHTML = `
+          <div class="source-row">
+            <span class="source-name">
+              <span class="source-dot"></span>
+              Sin datos
+            </span>
+            <strong>$0.00</strong>
+          </div>
+        `;
+
+        distributionList.innerHTML = `
+          <div class="distribution-item">
+            <span class="distribution-name">Sin datos</span>
+            <div class="distribution-track">
+              <div class="distribution-bar" style="width:0%"></div>
+            </div>
+            <span class="distribution-value">0%</span>
+          </div>
+        `;
+
+        sourceDonut.style.background = "#e7effe";
+        return;
+      }
+
+      const colores = crearColores(entradas.length);
+      let gradosAcumulados = 0;
+      const segmentos = [];
+
+      sourceList.innerHTML = "";
+      distributionList.innerHTML = "";
+
+      entradas.forEach(([fuente, monto], indice) => {
+        const porcentaje = total > 0 ? (monto / total) * 100 : 0;
+        const grados = (porcentaje / 100) * 360;
+        const inicio = gradosAcumulados;
+        const fin = gradosAcumulados + grados;
+
+        segmentos.push(
+          `${colores[indice]} ${inicio}deg ${fin}deg`
+        );
+
+        gradosAcumulados = fin;
+
+        sourceList.innerHTML += `
+          <div class="source-row">
+            <span class="source-name">
+              <span
+                class="source-dot"
+                style="background:${colores[indice]}">
+              </span>
+              ${fuente}
+            </span>
+            <strong>${moneda.format(monto)}</strong>
+          </div>
+        `;
+
+        distributionList.innerHTML += `
+          <div class="distribution-item">
+            <span class="distribution-name">${fuente}</span>
+
+            <div class="distribution-track">
+              <div
+                class="distribution-bar"
+                style="
+                  width:${porcentaje.toFixed(1)}%;
+                  background:${colores[indice]};
+                ">
+              </div>
+            </div>
+
+            <span class="distribution-value">
+              ${porcentaje.toFixed(0)}%
+            </span>
+          </div>
+        `;
+      });
+
+      sourceDonut.style.background =
+        `conic-gradient(${segmentos.join(",")})`;
+    }
+
+    function actualizarRecomendacion(ingresos, total) {
+      const recomendacion =
+        document.getElementById("incomeRecommendation");
+
+      if (ingresos.length === 0) {
+        recomendacion.textContent =
+          "Registra tus ingresos recurrentes para construir una visión " +
+          "más precisa de la capacidad financiera del hogar.";
+        return;
+      }
+
+      const recurrentes = ingresos.filter((item) =>
+        ["mensual", "quincenal", "semanal"].includes(
+          String(item.frecuencia || "").toLowerCase()
+        )
+      );
+
+      if (recurrentes.length === ingresos.length) {
+        recomendacion.textContent =
+          `Tus ${ingresos.length} ingresos registrados presentan una ` +
+          `frecuencia definida. El total actual es ${moneda.format(total)}.`;
+      } else {
+        recomendacion.textContent =
+          "Existen ingresos ocasionales o sin una frecuencia estable. " +
+          "Conviene mantener separados los ingresos recurrentes y variables.";
+      }
+    }
+
+    async function cargarIngresos() {
+      const tabla = document.getElementById("tablaIngresos");
+
+      try {
+        const response = await fetch("/api/ingresos");
+
+        if (!response.ok) {
+          throw new Error("No fue posible consultar los ingresos.");
+        }
+
+        const ingresos = await response.json();
+
+        let total = 0;
+
+        ingresos.forEach((item) => {
+          total += Number(item.monto_neto || 0);
+        });
+
+        const promedio =
+          ingresos.length > 0 ? total / ingresos.length : 0;
+
+        const frecuencia = frecuenciaMasComun(ingresos);
+        const fuentes = agruparPorFuente(ingresos);
+
+        document.getElementById("totalMes").textContent =
+          moneda.format(total);
+
+        document.getElementById("cantidadIngresos").textContent =
+          ingresos.length;
+
+        document.getElementById("promedioIngresos").textContent =
+          moneda.format(promedio);
+
+        document.getElementById("frecuenciaPrincipal").textContent =
+          frecuencia;
+
+        document.getElementById("sideMonthlyIncome").textContent =
+          moneda.format(total);
+
+        document.getElementById("detailCount").textContent =
+          `${ingresos.length} ${
+            ingresos.length === 1 ? "registro" : "registros"
+          }`;
+
+        actualizarFuentes(fuentes, total);
+        actualizarRecomendacion(ingresos, total);
+
+        if (ingresos.length === 0) {
+          tabla.innerHTML = `
+            <tr>
+              <td colspan="6" class="empty-cell">
+                No existen ingresos registrados.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tabla.innerHTML = "";
+
+        ingresos.forEach((item) => {
+          tabla.innerHTML += `
+            <tr>
+              <td>${item.fecha || ""}</td>
+              <td>${item.fuente || ""}</td>
+              <td>${item.tipo_ingreso || ""}</td>
+              <td>${moneda.format(Number(item.monto_neto || 0))}</td>
+              <td>${item.frecuencia || ""}</td>
+              <td>
+                <span class="text-green">Confirmado</span>
+              </td>
+            </tr>
+          `;
+        });
+      } catch (error) {
+        tabla.innerHTML = `
+          <tr>
+            <td colspan="6" class="empty-cell">
+              No fue posible cargar los ingresos.
+            </td>
+          </tr>
+        `;
+
+        document.getElementById("mensaje").textContent =
+          error.message;
+      }
+    }
+
+    function abrirFormulario() {
+      document.getElementById("registerPanel")
+        .classList.add("open");
+
+      document.getElementById("fecha").focus();
+    }
+
+    function cerrarFormulario() {
+      document.getElementById("registerPanel")
+        .classList.remove("open");
+
+      document.getElementById("mensaje").textContent = "";
+    }
+
+    document.getElementById("toggleFormButton")
+      .addEventListener("click", abrirFormulario);
+
+    document.getElementById("manualAction")
+      .addEventListener("click", abrirFormulario);
+
+    document.getElementById("cancelFormButton")
+      .addEventListener("click", cerrarFormulario);
+
+    document.getElementById("formIngreso")
+      .addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const mensaje = document.getElementById("mensaje");
+        const monto = Number(
+          document.getElementById("monto_neto").value
+        );
+
+        if (!Number.isFinite(monto) || monto <= 0) {
+          mensaje.textContent =
+            "Ingresa un monto neto mayor que cero.";
+          return;
+        }
+
+        mensaje.textContent = "Guardando ingreso...";
+
+        try {
+          const response = await fetch("/api/ingresos", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              hogar_id: "hogar-001",
+              integrante_id: "integrante-001",
+              fecha: document.getElementById("fecha").value,
+              tipo_ingreso:
+                document.getElementById("tipo_ingreso").value.trim(),
+              fuente:
+                document.getElementById("fuente").value.trim(),
+              descripcion:
+                document.getElementById("descripcion").value.trim(),
+              monto_bruto: monto,
+              deducciones: 0,
+              monto_neto: monto,
+              frecuencia:
+                document.getElementById("frecuencia").value,
+              notas: ""
+            })
+          });
+
+          const resultado = await response.json();
+
+          if (!response.ok || resultado.success === false) {
+            throw new Error(
+              resultado.error || "No se pudo guardar el ingreso."
+            );
+          }
+
+          mensaje.textContent =
+            "✅ Ingreso guardado correctamente.";
+
+          document.getElementById("formIngreso").reset();
+
+          await cargarIngresos();
+        } catch (error) {
+          mensaje.textContent = error.message;
+        }
+      });
+
+    cargarIngresos();
+  </script>
+
+  <script src="./assetsipt>
 
-  <div class="stat">
-    <div class="value" id="promedioIngresos">$0.00</div>
-    <div>Promedio</div>
-  </div>
-
-  <div class="stat">
-    <div class="value" id="proximoIngreso">--</div>
-    <div>Frecuencia Principal</div>
-  </div>
-
-</div>
-
-<hr>
-
-<h2>⚡ Acciones</h2>
-
-<div class="stats">
-
-<div class="action">
-➕ Registrar ingreso
-</div>
-
-<div class="action">
-📄 Subir rol de pagos
-</div>
-
-<div class="action">
-📎 Subir comprobante
-</div>
-
-<div class="action">
-🏦 Importar banco
-</div>
-
-</div>
-
-<hr>
-
-<h2>🏢 Resumen por Fuente</h2>
-
-<table class="table">
-
-<thead>
-<tr>
-<th>Fecha</th>
-<th>Fuente</th>
-<th>Monto Neto</th>
-<th>Frecuencia</th>
-</tr>
-</thead>
-
-<tbody id="tablaIngresos">
-
-<tr>
-<td colspan="4">
-Cargando...
-</td>
-</tr>
-
-</tbody>
-
-</table>
-
-<hr>
-
-<h2>➕ Registrar Ingreso</h2>
-
-<form id="formIngreso">
-
-<p>
-<label>Fecha</label><br>
-<input type="date" id="fecha" required>
-</p>
-
-<p>
-<label>Tipo de ingreso</label><br>
-<input type="text" id="tipo_ingreso" required>
-</p>
-
-<p>
-<label>Fuente</label><br>
-<input type="text" id="fuente" required>
-</p>
-
-<p>
-<label>Descripción</label><br>
-<input type="text" id="descripcion">
-</p>
-
-<p>
-<label>Monto Neto</label><br>
-<input type="number" id="monto_neto" step="0.01" required>
-</p>
-
-<p>
-<label>Frecuencia</label><br>
-<select id="frecuencia">
-<option value="mensual">Mensual</option>
-<option value="quincenal">Quincenal</option>
-<option value="semanal">Semanal</option>
-<option value="ocasional">Ocasional</option>
-</select>
-</p>
-
-<button type="submit">
-Guardar ingreso
-</button>
-
-</form>
-
-<div id="mensaje"></div>
-
-</div>
-
-<script>
-
-async function cargarIngresos() {
-
-  const response = await fetch('/api/ingresos');
-  const ingresos = await response.json();
-
-  const tabla =
-    document.getElementById('tablaIngresos');
-
-  let total = 0;
-
-  ingresos.forEach(item => {
-    total += Number(item.monto_neto || 0);
-  });
-
-  const promedio =
-    ingresos.length > 0
-      ? total / ingresos.length
-      : 0;
-
-  document.getElementById('totalMes').textContent =
-    '$' + total.toFixed(2);
-
-  document.getElementById('cantidadIngresos').textContent =
-    ingresos.length;
-
-  document.getElementById('promedioIngresos').textContent =
-    '$' + promedio.toFixed(2);
-
-  document.getElementById('proximoIngreso').textContent =
-    ingresos.length > 0
-      ? ingresos[0].frecuencia
-      : '--';
-
-  if (ingresos.length === 0) {
-
-    tabla.innerHTML = `
-      <tr>
-        <td colspan="4">
-          No existen ingresos registrados
-        </td>
-      </tr>
-    `;
-
-    return;
-  }
-
-  tabla.innerHTML = '';
-
-  ingresos.forEach(item => {
-
-    tabla.innerHTML += `
-      <tr>
-        <td>${item.fecha || ''}</td>
-        <td>${item.fuente || ''}</td>
-        <td>$${Number(item.monto_neto || 0).toFixed(2)}</td>
-        <td>${item.frecuencia || ''}</td>
-      </tr>
-    `;
-
-  });
-
-}
-
-document
-.getElementById('formIngreso')
-.addEventListener('submit', async (e) => {
-
-  e.preventDefault();
-
-  const response = await fetch('/api/ingresos', {
-
-    method:'POST',
-
-    headers:{
-      'Content-Type':'application/json'
-    },
-
-    body:JSON.stringify({
-
-      hogar_id:'hogar-001',
-
-      integrante_id:'integrante-001',
-
-      fecha:
-        document.getElementById('fecha').value,
-
-      tipo_ingreso:
-        document.getElementById('tipo_ingreso').value,
-
-      fuente:
-        document.getElementById('fuente').value,
-
-      descripcion:
-        document.getElementById('descripcion').value,
-
-      monto_bruto:
-        parseFloat(
-          document.getElementById('monto_neto').value
-        ),
-
-      deducciones:0,
-
-      monto_neto:
-        parseFloat(
-          document.getElementById('monto_neto').value
-        ),
-
-      frecuencia:
-        document.getElementById('frecuencia').value,
-
-      notas:''
-
-    })
-
-  });
-
-  await response.json();
-
-  document.getElementById('mensaje').innerHTML =
-    '✅ Ingreso guardado correctamente';
-
-  document.getElementById('formIngreso').reset();
-
-  await cargarIngresos();
-
-});
-
-cargarIngresos();
-
-</script>
-
-<script src="./assets/layout.js"></script>
-  
 </body>
 </html>
