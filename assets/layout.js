@@ -1,378 +1,289 @@
 (function () {
   "use strict";
 
-  const pages = [
+  const paginas = [
     {
-      key: "inicio",
-      title: "Inicio",
-      icon: "⌂",
-      file: "index.html",
-      subtitle: "Resumen de tu situación financiera."
+      titulo: "Inicio",
+      icono: "⌂",
+      archivo: "index.html",
+      descripcion: "Resumen de tu situación financiera."
     },
     {
-      key: "familia",
-      title: "Mi familia",
-      icon: "♟",
-      file: "familia.html",
-      subtitle: "La familia es un equipo. Juntos llegamos más lejos."
+      titulo: "Mi familia",
+      icono: "♟",
+      archivo: "familia.html",
+      descripcion: "La familia es un equipo financiero."
     },
     {
-      key: "ingresos",
-      title: "Ingresos",
-      icon: "＄",
-      file: "ingresos.html",
-      subtitle: "Registra y controla todos tus ingresos."
+      titulo: "Ingresos",
+      icono: "＄",
+      archivo: "ingresos.html",
+      descripcion: "Registra y controla todos tus ingresos."
     },
     {
-      key: "gastos",
-      title: "Gastos y consumo",
-      icon: "▣",
-      file: "gastos.html",
-      subtitle: "Controla tus gastos y detecta oportunidades de ahorro."
+      titulo: "Gastos y consumo",
+      icono: "▣",
+      archivo: "gastos.html",
+      descripcion: "Controla tus gastos y oportunidades de ahorro."
     },
     {
-      key: "tarjetas",
-      title: "Tarjetas",
-      icon: "▤",
-      file: "tarjetas.html",
-      subtitle: "Controla tus tarjetas de crédito y evita deudas innecesarias."
+      titulo: "Tarjetas",
+      icono: "▤",
+      archivo: "tarjetas.html",
+      descripcion: "Controla cupos, saldos y próximos pagos."
     },
     {
-      key: "deudas",
-      title: "Deudas y préstamos",
-      icon: "◉",
-      file: "deudasypréstamos.html",
-      subtitle: "Conoce tus deudas, pagos y caminos hacia la libertad financiera."
+      titulo: "Deudas y préstamos",
+      icono: "◉",
+      archivo: "deudasypréstamos.html",
+      descripcion: "Gestiona tus deudas y estrategias de pago."
     },
     {
-      key: "presupuesto",
-      title: "Presupuesto y ahorro",
-      icon: "◎",
-      file: "presupuesto y ahorro.html",
-      subtitle: "Define límites realistas y construye tus metas de ahorro."
+      titulo: "Presupuesto y ahorro",
+      icono: "◎",
+      archivo: "presupuesto y ahorro.html",
+      descripcion: "Define presupuestos y objetivos de ahorro."
     },
     {
-      key: "inteligencia",
-      title: "Inteligencia financiera",
-      icon: "◔",
-      file: "inteligencia financiera.html",
-      subtitle: "Recomendaciones basadas en la situación real del hogar."
+      titulo: "Inteligencia financiera",
+      icono: "◔",
+      archivo: "inteligencia financiera.html",
+      descripcion: "Recibe recomendaciones financieras explicables."
     },
     {
-      key: "consumo",
-      title: "Consumo inteligente",
-      icon: "▾",
-      file: "consumo-inteligente.html",
-      subtitle: "Analiza productos, compras repetidas y oportunidades de ahorro."
+      titulo: "Documentos",
+      icono: "▧",
+      archivo: "documentos.html",
+      descripcion: "Organiza tus documentos financieros."
     },
     {
-      key: "lista",
-      title: "Lista inteligente",
-      icon: "▦",
-      file: "lista-inteligente.html",
-      subtitle: "Convierte el análisis de consumo en una lista práctica."
-    },
-    {
-      key: "asistente",
-      title: "Asistente financiero",
-      icon: "✦",
-      file: "asistente-financiero.html",
-      subtitle: "Pregunta, recibe análisis y toma mejores decisiones."
-    },
-    {
-      key: "documentos",
-      title: "Documentos",
-      icon: "▧",
-      file: "documentos.html",
-      subtitle: "Carga y organiza comprobantes y documentos financieros."
-    },
-    {
-      key: "perfil",
-      title: "Perfil y seguridad",
-      icon: "◆",
-      file: "perfil y seguridad.html",
-      subtitle: "Mantén la cuenta segura y actualizada."
+      titulo: "Perfil y seguridad",
+      icono: "◆",
+      archivo: "perfil y seguridad.html",
+      descripcion: "Mantén tu cuenta segura y actualizada."
     }
   ];
 
-  const normalizar = (texto) => {
-    try {
-      return decodeURIComponent(texto || "")
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/\s+/g, "");
-    } catch (_) {
-      return String(texto || "").toLowerCase().replace(/\s+/g, "");
-    }
-  };
+  function obtenerArchivoActual() {
+    const ruta = window.location.pathname;
+    const archivo = ruta.substring(ruta.lastIndexOf("/") + 1);
 
-  const archivoActual = () => {
-    const path = window.location.pathname.split("/").pop();
-    return path || "index.html";
-  };
+    return archivo || "index.html";
+  }
 
-  const buscarPaginaActual = () => {
-    const actual = normalizar(archivoActual());
+  function obtenerPaginaActual() {
+    const archivoActual = obtenerArchivoActual();
 
     return (
-      pages.find((page) => normalizar(page.file) === actual) ||
-      pages.find((page) => actual.includes(normalizar(page.key))) ||
-      pages[0]
+      paginas.find(function (pagina) {
+        return pagina.archivo === archivoActual;
+      }) || paginas[0]
     );
-  };
+  }
 
-  const crearElemento = (tag, clase, contenido) => {
-    const elemento = document.createElement(tag);
+  function crearNavegacion(paginaActual) {
+    return paginas
+      .map(function (pagina, indice) {
+        const activa =
+          pagina.archivo === paginaActual.archivo ? " active" : "";
 
-    if (clase) {
-      elemento.className = clase;
-    }
+        const separador =
+          indice === paginas.length - 2
+            ? '<div class="nav-divider"></div>'
+            : "";
 
-    if (contenido !== undefined) {
-      elemento.textContent = contenido;
-    }
+        return (
+          separador +
+          '<a class="nav-item' +
+          activa +
+          '" href="' +
+          pagina.archivo +
+          '">' +
+          '<span class="nav-icon">' +
+          pagina.icono +
+          "</span>" +
+          '<span class="nav-label">' +
+          pagina.titulo +
+          "</span>" +
+          "</a>"
+        );
+      })
+      .join("");
+  }
 
-    return elemento;
-  };
-
-  const crearNavegacion = (paginaActual) => {
-    const nav = crearElemento("nav", "sidebar-nav");
-    nav.setAttribute("aria-label", "Navegación principal");
-
-    const principal = crearElemento("div", "nav-section");
-    const secundaria = crearElemento("div", "nav-section");
-
-    const clavesPrincipales = [
-      "inicio",
-      "familia",
-      "ingresos",
-      "gastos",
-      "tarjetas",
-      "deudas",
-      "presupuesto",
-      "inteligencia",
-      "consumo",
-      "lista",
-      "asistente"
-    ];
-
-    pages.forEach((page) => {
-      const enlace = crearElemento("a", "nav-item");
-      enlace.href = page.file;
-      enlace.dataset.page = page.key;
-
-      if (page.key === paginaActual.key) {
-        enlace.classList.add("active");
-        enlace.setAttribute("aria-current", "page");
-      }
-
-      const icono = crearElemento("span", "nav-icon", page.icon);
-      icono.setAttribute("aria-hidden", "true");
-
-      const texto = crearElemento("span", "nav-label", page.title);
-
-      enlace.append(icono, texto);
-
-      if (clavesPrincipales.includes(page.key)) {
-        principal.appendChild(enlace);
-      } else {
-        secundaria.appendChild(enlace);
-      }
-    });
-
-    nav.appendChild(principal);
-
-    const divider = crearElemento("div", "nav-divider");
-    divider.setAttribute("aria-hidden", "true");
-    nav.appendChild(divider);
-
-    nav.appendChild(secundaria);
-
-    return nav;
-  };
-
-  const crearSidebar = (paginaActual) => {
-    const sidebar = crearElemento("aside", "app-sidebar");
-    sidebar.id = "appSidebar";
-
-    const marca = crearElemento("div", "brand-row");
-
-    const logotipo = crearElemento("div", "brand-mark", "F");
-    logotipo.setAttribute("aria-hidden", "true");
-
-    const marcaTexto = crearElemento("div");
-    const nombre = crearElemento("div", "brand-name", "FINANZA AI");
-    const lema = crearElemento(
-      "div",
-      "brand-tag",
-      "Tu bienestar financiero, en familia"
-    );
-
-    marcaTexto.append(nombre, lema);
-    marca.append(logotipo, marcaTexto);
-
-    const navegacion = crearNavegacion(paginaActual);
-
-    const pie = crearElemento("div", "sidebar-footer");
-    const pieIcono = crearElemento("span", "sidebar-footer-icon", "♡");
-    const pieTexto = crearElemento(
-      "div",
-      "",
-      "Juntos construimos un mejor futuro financiero"
-    );
-
-    pie.append(pieIcono, pieTexto);
-    sidebar.append(marca, navegacion, pie);
-
-    return sidebar;
-  };
-
-  const crearTopbar = (paginaActual) => {
-    const topbar = crearElemento("header", "app-topbar");
-
-    const izquierda = crearElemento("div", "topbar-left");
-
-    const botonMenu = crearElemento("button", "mobile-menu-button", "☰");
-    botonMenu.type = "button";
-    botonMenu.setAttribute("aria-label", "Abrir menú");
-    botonMenu.setAttribute("aria-controls", "appSidebar");
-    botonMenu.setAttribute("aria-expanded", "false");
-
-    const icono = crearElemento("div", "topbar-icon", paginaActual.icon);
-    icono.setAttribute("aria-hidden", "true");
-
-    const textos = crearElemento("div", "topbar-copy");
-    const titulo = crearElemento("h1", "topbar-title", paginaActual.title);
-    const estado = crearElemento(
-      "div",
-      "topbar-status",
-      paginaActual.subtitle
-    );
-
-    textos.append(titulo, estado);
-    izquierda.append(botonMenu, icono, textos);
-
-    const derecha = crearElemento("div", "topbar-right");
-
-    const notificaciones = crearElemento(
-      "button",
-      "notification-button",
-      "♧"
-    );
-    notificaciones.type = "button";
-    notificaciones.setAttribute("aria-label", "Notificaciones");
-
-    const perfil = crearElemento("div", "profile-chip");
-    const avatar = crearElemento("div", "profile-avatar", "AV");
-    const perfilNombre = crearElemento("span", "", "Finanzas Per");
-
-    perfil.append(avatar, perfilNombre);
-    derecha.append(notificaciones, perfil);
-
-    topbar.append(izquierda, derecha);
-
-    botonMenu.addEventListener("click", () => {
-      const abierto = document.body.classList.toggle("sidebar-open");
-      botonMenu.setAttribute("aria-expanded", String(abierto));
-    });
-
-    return topbar;
-  };
-
-  const prepararContenido = (contenido) => {
-    contenido.querySelectorAll("a").forEach((enlace) => {
-      const href = enlace.getAttribute("href");
-
-      if (!href) {
+  function prepararTablas(contenido) {
+    contenido.querySelectorAll("table.table").forEach(function (tabla) {
+      if (
+        tabla.parentElement &&
+        tabla.parentElement.classList.contains("table-wrapper")
+      ) {
         return;
       }
 
-      if (
-        href === "index.html" &&
-        enlace.textContent.toLowerCase().includes("volver")
-      ) {
+      const contenedor = document.createElement("div");
+      contenedor.className = "table-wrapper";
+
+      tabla.parentNode.insertBefore(contenedor, tabla);
+      contenedor.appendChild(tabla);
+    });
+  }
+
+  function ocultarEnlacesVolver(contenido) {
+    contenido.querySelectorAll("a").forEach(function (enlace) {
+      const texto = enlace.textContent || "";
+
+      if (texto.toLowerCase().includes("volver al inicio")) {
         enlace.style.display = "none";
       }
     });
+  }
 
-    contenido.querySelectorAll("table.table").forEach((tabla) => {
-      if (tabla.parentElement.classList.contains("table-wrapper")) {
-        return;
-      }
-
-      const wrapper = crearElemento("div", "table-wrapper");
-      tabla.parentNode.insertBefore(wrapper, tabla);
-      wrapper.appendChild(tabla);
-    });
-  };
-
-  const montarLayout = () => {
-    if (document.body.dataset.layoutReady === "true") {
+  function montarAplicacion() {
+    if (document.querySelector(".app-shell")) {
       return;
     }
 
-    document.body.dataset.layoutReady = "true";
+    const paginaActual = obtenerPaginaActual();
+
     document.body.classList.add("finanza-layout");
 
-    const paginaActual = buscarPaginaActual();
-
+    /*
+     * Guardamos únicamente el contenido visual actual.
+     * Los scripts ya cargados no se vuelven a ejecutar.
+     */
     const nodosOriginales = Array.from(document.body.childNodes).filter(
-      (nodo) =>
-        !(
-          nodo.nodeType === Node.ELEMENT_NODE &&
-          nodo.tagName === "SCRIPT" &&
-          nodo.src &&
-          nodo.src.includes("assets/layout.js")
-        )
+      function (nodo) {
+        if (nodo.nodeType !== Node.ELEMENT_NODE) {
+          return true;
+        }
+
+        if (nodo.tagName !== "SCRIPT") {
+          return true;
+        }
+
+        return false;
+      }
     );
 
-    const shell = crearElemento("div", "app-shell");
-    const sidebar = crearSidebar(paginaActual);
-    const main = crearElemento("main", "app-main");
-    const topbar = crearTopbar(paginaActual);
-    const contenido = crearElemento("div", "app-content");
-    const overlay = crearElemento("div", "mobile-overlay");
+    /*
+     * Limpiamos el body y creamos la estructura general.
+     */
+    document.body.innerHTML = "";
 
-    overlay.setAttribute("aria-hidden", "true");
+    const shell = document.createElement("div");
+    shell.className = "app-shell";
 
-    nodosOriginales.forEach((nodo) => {
+    const sidebar = document.createElement("aside");
+    sidebar.className = "app-sidebar";
+    sidebar.id = "appSidebar";
+
+    sidebar.innerHTML =
+      '<div class="brand-row">' +
+      '<div class="brand-mark">F</div>' +
+      "<div>" +
+      '<div class="brand-name">FINANZA AI</div>' +
+      '<div class="brand-tag">Tu bienestar financiero, en familia</div>' +
+      "</div>" +
+      "</div>" +
+      '<nav class="sidebar-nav" aria-label="Navegación principal">' +
+      crearNavegacion(paginaActual) +
+      "</nav>" +
+      '<div class="sidebar-footer">' +
+      '<span class="sidebar-footer-icon">♡</span>' +
+      "<div>Juntos construimos un mejor futuro financiero</div>" +
+      "</div>";
+
+    const main = document.createElement("main");
+    main.className = "app-main";
+
+    const topbar = document.createElement("header");
+    topbar.className = "app-topbar";
+
+    topbar.innerHTML =
+      '<div class="topbar-left">' +
+      '<button type="button" class="mobile-menu-button" ' +
+      'aria-label="Abrir menú" aria-controls="appSidebar" ' +
+      'aria-expanded="false">☰</button>' +
+      '<div class="topbar-icon">' +
+      paginaActual.icono +
+      "</div>" +
+      '<div class="topbar-copy">' +
+      '<h1 class="topbar-title">' +
+      paginaActual.titulo +
+      "</h1>" +
+      '<div class="topbar-status">' +
+      paginaActual.descripcion +
+      "</div>" +
+      "</div>" +
+      "</div>" +
+      '<div class="topbar-right">' +
+      '<button type="button" class="notification-button" ' +
+      'aria-label="Notificaciones">♧</button>' +
+      '<div class="profile-chip">' +
+      '<div class="profile-avatar">AV</div>' +
+      "<span>Finanzas Per</span>" +
+      "</div>" +
+      "</div>";
+
+    const contenido = document.createElement("div");
+    contenido.className = "app-content";
+
+    nodosOriginales.forEach(function (nodo) {
       contenido.appendChild(nodo);
     });
 
-    prepararContenido(contenido);
+    prepararTablas(contenido);
+    ocultarEnlacesVolver(contenido);
 
-    main.append(topbar, contenido);
-    shell.append(sidebar, main);
+    const overlay = document.createElement("div");
+    overlay.className = "mobile-overlay";
+    overlay.setAttribute("aria-hidden", "true");
 
-    document.body.append(shell, overlay);
+    main.appendChild(topbar);
+    main.appendChild(contenido);
 
-    overlay.addEventListener("click", () => {
+    shell.appendChild(sidebar);
+    shell.appendChild(main);
+
+    document.body.appendChild(shell);
+    document.body.appendChild(overlay);
+
+    const botonMenu = document.querySelector(".mobile-menu-button");
+
+    if (botonMenu) {
+      botonMenu.addEventListener("click", function () {
+        const abierto =
+          document.body.classList.toggle("sidebar-open");
+
+        botonMenu.setAttribute(
+          "aria-expanded",
+          abierto ? "true" : "false"
+        );
+      });
+    }
+
+    overlay.addEventListener("click", function () {
       document.body.classList.remove("sidebar-open");
 
-      const boton = document.querySelector(".mobile-menu-button");
-      if (boton) {
-        boton.setAttribute("aria-expanded", "false");
+      if (botonMenu) {
+        botonMenu.setAttribute("aria-expanded", "false");
       }
     });
 
-    sidebar.querySelectorAll(".nav-item").forEach((enlace) => {
-      enlace.addEventListener("click", () => {
-        document.body.classList.remove("sidebar-open");
-      });
-    });
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
+    document.addEventListener("keydown", function (evento) {
+      if (evento.key === "Escape") {
         document.body.classList.remove("sidebar-open");
 
-        const boton = document.querySelector(".mobile-menu-button");
-        if (boton) {
-          boton.setAttribute("aria-expanded", "false");
+        if (botonMenu) {
+          botonMenu.setAttribute("aria-expanded", "false");
         }
       }
     });
-  };
+  }
 
   if (document.readyState === "loading") {
-    document
+    document.addEventListener("DOMContentLoaded", montarAplicacion);
+  } else {
+    montarAplicacion();
+  }
+})();
