@@ -297,6 +297,7 @@ Cargando...
 
 <table class="table">
 
+<thead>
 <tr>
 <th>Institución</th>
 <th>Monto Original</th>
@@ -304,12 +305,17 @@ Cargando...
 <th>Cuotas Pagadas</th>
 <th>Cuotas Restantes</th>
 </tr>
+</thead>
+
+<tbody id="tablaDetalle">
 
 <tr>
 <td colspan="5">
-No existen deudas registradas
+Cargando...
 </td>
 </tr>
+
+</tbody>
 
 </table>
 
@@ -361,17 +367,6 @@ console.log(deudas[0]);
   const tablaPrestamos =
     document.getElementById('tablaPrestamos');
   
-tablaPrestamos.innerHTML = `
-<tr>
-  <td>Banco Pichincha</td>
-  <td>Vehicular</td>
-  <td>$18000</td>
-  <td>12.5%</td>
-  <td>42</td>
-</tr>
-`;
-
-return;
   const tablaDetalle =
     document.getElementById('tablaDetalle');
 
