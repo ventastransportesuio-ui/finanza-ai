@@ -1024,67 +1024,154 @@
     document.getElementById("cancelFormButton")
       .addEventListener("click", cerrarFormulario);
 
-    document.getElementById("formIngreso")
-      .addEventListener("submit", async (event) => {
-        event.preventDefault();
+   document.getElementById("formIngreso")
+  .addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-        const mensaje = document.getElementById("mensaje");
-        const monto = Number(
-          document.getElementById("monto_neto").value
-        );
+    const formulario = document.getElementById("formIngreso");
+    const mensaje = document.getElementById("mensaje");
+    const botonGuardar = formulario.querySelector(
+      'button[type="submit"]'
+    );
 
-        if (!Number.isFinite(monto) || monto <= 0) {
-          mensaje.textContent =
-            "Ingresa un monto neto mayor que cero.";
-          return;
-        }
+    mensaje.textContent = "";
 
-        mensaje.textContent = "Guardando ingreso...";
+    if (!formulario.checkValidity()) {
+      formulario.reportValidity();
+      mensaje.textContent =
+        "Revisa los campos obligatorios del formulario.";
+      return;
+    }
 
-        try {
-          const response = await fetch("/api/ingresos", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              hogar_id: "hogar-001",
-              integrante_id: "integrante-001",
-              fecha: document.getElementById("fecha").value,
-              tipo_ingreso:
-                document.getElementById("tipo_ingreso").value.trim(),
-              fuente:
-                document.getElementById("fuente").value.trim(),
-              descripcion:
-                document.getElementById("descripcion").value.trim(),
-              monto_bruto: monto,
-              deducciones: 0,
-              monto_neto: monto,
-              frecuencia:
-                document.getElementById("frecuencia").value,
-              notas: ""
-            })
-          });
+    const fecha = document.getElementById("fecha").value;
+    const tipoIngreso =
+      document.getElementById("tipo_ingreso").value.trim();
+    const fuente =
+      document.getElementById("fuente").value.trim();
+    const descripcion =
+      document.getElementById("descripcion").value.trim();
+    const frecuencia =
+      document.getElementById("frecuencia").value;
+    const montoTexto =
+      document.getElementById("monto_neto").value;
+    const monto = Number(montoTexto);
 
-          const resultado = await response.json();
+    if (!fecha) {
+      mensaje.textContent = "Selecciona la fecha del ingreso.";
+      document.getElementById("fecha").focus();
+      return;
+    }
 
-          if (!response.ok || resultado.success === false) {
-            throw new Error(
-              resultado.error || "No se pudo guardar el ingreso."
-            );
-          }
+    const fechaIngresada = new Date(`${fecha}T00:00:00`);
 
-          mensaje.textContent =
-            "✅ Ingreso guardado correctamente.";
+    if (Number.isNaN(fechaIngresada.getTime())) {
+      mensaje.textContent = "La fecha introducida no es válida.";
+      document.getElementById("fecha").focus();
+      return;
+    }
 
-          document.getElementById("formIngreso").reset();
+    if (tipoIngreso.length < 2 || tipoIngreso.length > 80) {
+      mensaje.textContent =
+        "El tipo de ingreso debe tener entre 2 y 80 caracteres.";
+      document.getElementById("tipo_ingreso").focus();
+      return;
+    }
 
-          await cargarIngresos();
-        } catch (error) {
-          mensaje.textContent = error.message;
-        }
+    if (fuente.length < 2 || fuente.length > 120) {
+      mensaje.textContent =
+        "La fuente debe tener entre 2 y 120 caracteres.";
+      document.getElementById("fuente").focus();
+      return;
+    }
+
+    if (descripcion.length > 500) {
+      mensaje.textContent =
+        "La descripción no puede superar los 500 caracteres.";
+      document.getElementById("descripcion").focus();
+      return;
+    }
+
+    if (
+      montoTexto.trim() === "" ||
+      !Number.isFinite(monto) ||
+      monto <= 0 ||
+      monto > 100000000
+    ) {
+      mensaje.textContent =
+        "Introduce un monto válido mayor que cero.";
+      document.getElementById("monto_neto").focus();
+      return;
+    }
+
+    const frecuenciasPermitidas = [
+      "mensual",
+      "quincenal",
+      "semanal",
+      "ocasional"
+    ];
+
+    if (!frecuenciasPermitidas.includes(frecuencia)) {
+      mensaje.textContent =
+        "Selecciona una frecuencia válida.";
+      document.getElementById("frecuencia").focus();
+      return;
+    }
+
+    mensaje.textContent = "Guardando ingreso...";
+    botonGuardar.disabled = true;
+    botonGuardar.textContent = "Guardando...";
+
+    try {
+      const response = await fetch("/api/ingresos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          hogar_id: "hogar-001",
+          integrante_id: "integrante-001",
+          fecha: fecha,
+          tipo_ingreso: tipoIngreso,
+          fuente: fuente,
+          descripcion: descripcion,
+          monto_bruto: monto,
+          deducciones: 0,
+          monto_neto: monto,
+          frecuencia: frecuencia,
+          notas: ""
+        })
       });
 
+      let resultado;
+
+      try {
+        resultado = await response.json();
+      } catch {
+        resultado = {};
+      }
+
+      if (!response.ok || resultado.success === false) {
+        throw new Error(
+          resultado.error || "No se pudo guardar el ingreso."
+        );
+      }
+
+      mensaje.textContent =
+        "✅ Ingreso guardado correctamente.";
+
+      formulario.reset();
+
+      await cargarIngresos();
+    } catch (error) {
+      console.error("Error al guardar el ingreso:", error);
+
+      mensaje.textContent =
+        "No fue posible guardar el ingreso. Inténtalo nuevamente.";
+    } finally {
+      botonGuardar.disabled = false;
+      botonGuardar.textContent = "Guardar ingreso";
+    }
+  });
     cargarIngresos();
   </script>
 
