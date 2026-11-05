@@ -435,7 +435,7 @@
     }
     </style>
 
-  ./assets/styles.css
+ <link rel="stylesheet" href="./assets/styles.css">
 </head>
 
 <body>
@@ -912,7 +912,31 @@
           "Conviene mantener separados los ingresos recurrentes y variables.";
       }
     }
+function obtenerIngresosDelMes(ingresos) {
+  const hoy = new Date();
+  const anioActual = hoy.getFullYear();
+  const mesActual = hoy.getMonth();
 
+  return ingresos.filter((item) => {
+    if (!item.fecha) {
+      return false;
+    }
+
+    const partesFecha = String(item.fecha).split("-");
+
+    if (partesFecha.length !== 3) {
+      return false;
+    }
+
+    const anioIngreso = Number(partesFecha[0]);
+    const mesIngreso = Number(partesFecha[1]) - 1;
+
+    return (
+      anioIngreso === anioActual &&
+      mesIngreso === mesActual
+    );
+  });
+}
     async function cargarIngresos() {
       const tabla = document.getElementById("tablaIngresos");
 
@@ -923,25 +947,37 @@
           throw new Error("No fue posible consultar los ingresos.");
         }
 
-        const ingresos = await response.json();
+ const resultado = await response.json();
 
-        let total = 0;
+const ingresos = Array.isArray(resultado)
+  ? resultado
+  : Array.isArray(resultado.data)
+    ? resultado.data
+    : [];
 
-        ingresos.forEach((item) => {
-          total += Number(item.monto_neto || 0);
-        });
+const ingresosDelMes = obtenerIngresosDelMes(ingresos);
 
-        const promedio =
-          ingresos.length > 0 ? total / ingresos.length : 0;
+const total = ingresosDelMes.reduce(
+  (acumulado, item) => {
+    return acumulado + Number(item.monto_neto || 0);
+  },
+  0
+);
 
-        const frecuencia = frecuenciaMasComun(ingresos);
-        const fuentes = agruparPorFuente(ingresos);
+const promedio =
+  ingresosDelMes.length > 0
+    ? total / ingresosDelMes.length
+    : 0;
+
+const frecuencia = frecuenciaMasComun(ingresosDelMes);
+const fuentes = agruparPorFuente(ingresosDelMes);
+
 
         document.getElementById("totalMes").textContent =
           moneda.format(total);
 
         document.getElementById("cantidadIngresos").textContent =
-          ingresos.length;
+  ingresosDelMes.length;
 
         document.getElementById("promedioIngresos").textContent =
           moneda.format(promedio);
@@ -958,7 +994,7 @@
           }`;
 
         actualizarFuentes(fuentes, total);
-        actualizarRecomendacion(ingresos, total);
+        actualizarRecomendacion(ingresosDelMes, total);
 
         if (ingresos.length === 0) {
           tabla.innerHTML = `
