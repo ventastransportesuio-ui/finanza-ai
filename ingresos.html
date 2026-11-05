@@ -738,6 +738,15 @@
       minimumFractionDigits: 2
     });
 
+    function escaparHTML(valor) {
+  return String(valor ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+    
     function normalizarFuente(valor) {
       const fuente = String(valor || "Otros").trim();
       return fuente || "Otros";
@@ -849,12 +858,13 @@
 
         sourceList.innerHTML += `
           <div class="source-row">
-            <span class="source-name">
-              <span
-                class="source-dot"
-                style="background:${colores[indice]}">
-              </span>
-              ${fuente}
+          <span class="source-name">
+  <span
+    class="source-dot"
+    style="background:${colores[indice]}">
+  </span>
+  ${escaparHTML(fuente)}
+</span>
             </span>
             <strong>${moneda.format(monto)}</strong>
           </div>
@@ -862,7 +872,9 @@
 
         distributionList.innerHTML += `
           <div class="distribution-item">
-            <span class="distribution-name">${fuente}</span>
+            <span class="distribution-name">
+                ${escaparHTML(fuente)}
+            </span>
 
             <div class="distribution-track">
               <div
@@ -1011,17 +1023,17 @@ const fuentes = agruparPorFuente(ingresosDelMes);
 
         ingresos.forEach((item) => {
           tabla.innerHTML += `
-            <tr>
-              <td>${item.fecha || ""}</td>
-              <td>${item.fuente || ""}</td>
-              <td>${item.tipo_ingreso || ""}</td>
-              <td>${moneda.format(Number(item.monto_neto || 0))}</td>
-              <td>${item.frecuencia || ""}</td>
-              <td>
-                <span class="text-green">Confirmado</span>
-              </td>
-            </tr>
-          `;
+  <tr>
+    <td>${escaparHTML(item.fecha)}</td>
+    <td>${escaparHTML(item.fuente)}</td>
+    <td>${escaparHTML(item.tipo_ingreso)}</td>
+    <td>${moneda.format(Number(item.monto_neto || 0))}</td>
+    <td>${escaparHTML(item.frecuencia)}</td>
+    <td>
+      <span class="text-green">Confirmado</span>
+    </td>
+  </tr>
+`;
         });
       } catch (error) {
         tabla.innerHTML = `
