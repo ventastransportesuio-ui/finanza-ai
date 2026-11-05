@@ -732,6 +732,8 @@
   </div>
 
   <script>
+    let hogarActualId = null;
+    let integranteActualId = null;
     const moneda = new Intl.NumberFormat("es-EC", {
       style: "currency",
       currency: "USD",
@@ -924,6 +926,73 @@
           "Conviene mantener separados los ingresos recurrentes y variables.";
       }
     }
+
+async function cargarContextoFinanciero() {
+  const [respuestaHogares, respuestaIntegrantes] =
+    await Promise.all([
+      fetch("/api/hogares"),
+      fetch("/api/integrantes")
+    ]);
+
+  if (!respuestaHogares.ok || !respuestaIntegrantes.ok) {
+    throw new Error(
+      "No fue posible obtener los datos del hogar."
+    );
+  }
+
+  const resultadoHogares =
+    await respuestaHogares.json();
+
+  const resultadoIntegrantes =
+    await respuestaIntegrantes.json();
+
+  const hogares = Array.isArray(resultadoHogares)
+    ? resultadoHogares
+    : Array.isArray(resultadoHogares.data)
+      ? resultadoHogares.data
+      : [];
+
+  const integrantes = Array.isArray(resultadoIntegrantes)
+    ? resultadoIntegrantes
+    : Array.isArray(resultadoIntegrantes.data)
+      ? resultadoIntegrantes.data
+      : [];
+
+  const hogarActivo =
+    hogares.find((item) => item.status === "active") ||
+    hogares[0];
+
+  if (!hogarActivo) {
+    throw new Error(
+      "No existe un hogar configurado."
+    );
+  }
+
+  const integranteActivo =
+    integrantes.find((item) => {
+      const perteneceAlHogar =
+        item.hogar_id === hogarActivo.id;
+
+      const estaActivo =
+        item.activo !== 0 &&
+        item.status !== "inactive";
+
+      return perteneceAlHogar && estaActivo;
+    }) ||
+    integrantes.find(
+      (item) => item.hogar_id === hogarActivo.id
+    ) ||
+    integrantes[0];
+
+  if (!integranteActivo) {
+    throw new Error(
+      "No existe un integrante configurado."
+    );
+  }
+
+  hogarActualId = hogarActivo.id;
+  integranteActualId = integranteActivo.id;
+}
 function obtenerIngresosDelMes(ingresos) {
   const hoy = new Date();
   const anioActual = hoy.getFullYear();
@@ -1220,10 +1289,29 @@ const fuentes = agruparPorFuente(ingresosDelMes);
       botonGuardar.textContent = "Guardar ingreso";
     }
   });
-    cargarIngresos();
+async function iniciarPagina() {
+  const mensaje = document.getElementById("mensaje");
+
+  try {
+    await cargarContextoFinanciero();
+    await cargarIngresos();
+  } catch (error) {
+    console.error(
+      "Error al iniciar la página de ingresos:",
+      error
+    );
+
+    mensaje.textContent =
+      error.message ||
+      "No fue posible iniciar la página.";
+  }
+}
+
+iniciarPagina();
+
   </script>
 
- <script src="./assets/layout.js"></script>
+  <script src="./assets/layout.js"></script>
 
 </body>
 </html>
