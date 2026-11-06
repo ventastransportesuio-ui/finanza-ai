@@ -265,6 +265,17 @@
       line-height:1.4;
     }
 
+    .income-action-disabled{
+  cursor:not-allowed;
+  opacity:.62;
+}
+
+.income-action-disabled:hover{
+  border-color:#e4eaf2;
+  box-shadow:none;
+  transform:none;
+}
+    
     .side-highlight{
       padding:18px;
       border:1px solid #dce7f7;
@@ -570,30 +581,35 @@
             </div>
           </div>
 
-          <div class="income-action">
-            <div class="income-action-icon">▧</div>
-            <div class="income-action-title">Subir rol de pagos</div>
-            <div class="income-action-copy">
-              La IA extraerá la información automáticamente.
-            </div>
-          </div>
+          <div
+  class="income-action income-action-disabled"
+  aria-disabled="true">
+  <div class="income-action-icon">▧</div>
+  <div class="income-action-title">Subir rol de pagos</div>
+  <div class="income-action-copy">
+    Próximamente: extracción automática con IA.
+  </div>
+</div>
 
-          <div class="income-action">
-            <div class="income-action-icon">▣</div>
-            <div class="income-action-title">Subir comprobante</div>
-            <div class="income-action-copy">
-              Facturas, transferencias y comprobantes.
-            </div>
-          </div>
+         <div
+  class="income-action income-action-disabled"
+  aria-disabled="true">
+  <div class="income-action-icon">▣</div>
+  <div class="income-action-title">Subir comprobante</div>
+  <div class="income-action-copy">
+    Próximamente: carga de facturas y comprobantes.
+  </div>
+</div>
 
-          <div class="income-action">
-            <div class="income-action-icon">↻</div>
-            <div class="income-action-title">Importar desde banco</div>
-            <div class="income-action-copy">
-              Conecta o carga movimientos bancarios.
-            </div>
-          </div>
-        </div>
+          <div
+  class="income-action income-action-disabled"
+  aria-disabled="true">
+  <div class="income-action-icon">↻</div>
+  <div class="income-action-title">Importar desde banco</div>
+  <div class="income-action-copy">
+    Próximamente: importación de movimientos bancarios.
+  </div>
+</div>
 
         <div class="register-panel" id="registerPanel">
 
