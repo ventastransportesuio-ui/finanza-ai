@@ -1233,7 +1233,12 @@ const fuentes = agruparPorFuente(ingresosDelMes);
       document.getElementById("frecuencia").focus();
       return;
     }
+if (!hogarActualId || !integranteActualId) {
+  mensaje.textContent =
+    "No fue posible identificar el hogar o el integrante.";
 
+  return;
+}
     mensaje.textContent = "Guardando ingreso...";
     botonGuardar.disabled = true;
     botonGuardar.textContent = "Guardando...";
@@ -1245,8 +1250,8 @@ const fuentes = agruparPorFuente(ingresosDelMes);
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          hogar_id: "hogar-001",
-          integrante_id: "integrante-001",
+         hogar_id: hogarActualId,
+          integrante_id: integranteActualId,
           fecha: fecha,
           tipo_ingreso: tipoIngreso,
           fuente: fuente,
