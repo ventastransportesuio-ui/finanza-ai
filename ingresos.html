@@ -233,10 +233,21 @@
     }
 button.income-action{
   width:100%;
+  appearance:none;
+  -webkit-appearance:none;
+  color:inherit;
   font:inherit;
   text-align:left;
+  line-height:normal;
 }
-    
+button.income-action .income-action-icon{
+  display:flex;
+}
+
+button.income-action .income-action-title,
+button.income-action .income-action-copy{
+  display:block;
+}    
     .income-action:hover{
       border-color:#b9cef8;
       box-shadow:0 8px 18px rgba(47,111,237,.10);
