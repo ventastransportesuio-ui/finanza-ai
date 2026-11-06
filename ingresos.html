@@ -231,7 +231,12 @@
       cursor:pointer;
       transition:.2s ease;
     }
-
+button.income-action{
+  width:100%;
+  font:inherit;
+  text-align:left;
+}
+    
     .income-action:hover{
       border-color:#b9cef8;
       box-shadow:0 8px 18px rgba(47,111,237,.10);
@@ -573,13 +578,18 @@
         </div>
 
         <div class="income-actions">
-          <div class="income-action" id="manualAction">
-            <div class="income-action-icon">+</div>
-            <div class="income-action-title">Registrar ingreso</div>
-            <div class="income-action-copy">
-              Ingresa manualmente un nuevo ingreso.
-            </div>
-          </div>
+         <button
+  type="button"
+  class="income-action"
+  id="manualAction">
+  <span class="income-action-icon">+</span>
+  <span class="income-action-title">
+    Registrar ingreso
+  </span>
+  <span class="income-action-copy">
+    Ingresa manualmente un nuevo ingreso.
+  </span>
+</button>
 
           <div
   class="income-action income-action-disabled"
