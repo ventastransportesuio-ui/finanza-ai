@@ -739,7 +739,22 @@
       currency: "USD",
       minimumFractionDigits: 2
     });
+function obtenerEtiquetaEstado(status) {
+  const estado = String(status || "active")
+    .trim()
+    .toLowerCase();
 
+  const etiquetas = {
+    active: "Confirmado",
+    confirmed: "Confirmado",
+    pending: "Pendiente",
+    archived: "Archivado",
+    inactive: "Inactivo",
+    deleted: "Eliminado"
+  };
+
+  return etiquetas[estado] || "Registrado";
+}
     function escaparHTML(valor) {
   return String(valor ?? "")
     .replaceAll("&", "&amp;")
@@ -1099,7 +1114,9 @@ const fuentes = agruparPorFuente(ingresosDelMes);
     <td>${moneda.format(Number(item.monto_neto || 0))}</td>
     <td>${escaparHTML(item.frecuencia)}</td>
     <td>
-      <span class="text-green">Confirmado</span>
+      <span class="text-green">
+        ${escaparHTML(obtenerEtiquetaEstado(item.status))}
+      </span>
     </td>
   </tr>
 `;
