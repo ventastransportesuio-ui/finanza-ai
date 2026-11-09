@@ -857,6 +857,21 @@ button.income-action .income-action-copy{
       currency: "USD",
       minimumFractionDigits: 2
     });
+    function obtenerFechaLocalActual() {
+  const hoy = new Date();
+
+  const anio = hoy.getFullYear();
+
+  const mes = String(
+    hoy.getMonth() + 1
+  ).padStart(2, "0");
+
+  const dia = String(
+    hoy.getDate()
+  ).padStart(2, "0");
+
+  return `${anio}-${mes}-${dia}`;
+}
 function obtenerEtiquetaEstado(status) {
   const estado = String(status || "active")
     .trim()
@@ -1254,11 +1269,20 @@ const fuentes = agruparPorFuente(ingresosDelMes);
     }
 
     function abrirFormulario() {
-      document.getElementById("registerPanel")
-        .classList.add("open");
+  const panel =
+    document.getElementById("registerPanel");
 
-      document.getElementById("fecha").focus();
-    }
+  const campoFecha =
+    document.getElementById("fecha");
+
+  panel.classList.add("open");
+
+  if (!campoFecha.value) {
+    campoFecha.value = obtenerFechaLocalActual();
+  }
+
+  campoFecha.focus();
+}
 
     function cerrarFormulario() {
       document.getElementById("registerPanel")
