@@ -1438,7 +1438,9 @@ if (!hogarActualId || !integranteActualId) {
         "✅ Ingreso guardado correctamente.";
 
       formulario.reset();
-
+document.getElementById("fecha").value =
+  obtenerFechaLocalActual();
+      
       await cargarIngresos();
     } catch (error) {
       console.error("Error al guardar el ingreso:", error);
