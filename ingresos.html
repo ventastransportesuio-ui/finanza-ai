@@ -655,13 +655,7 @@ button.income-action .income-action-copy{
 
       <article class="section-card">
         <div class="section-header">
-          <h2>Agregar ingreso</h2>
-          <button
-            type="button"
-            class="secondary-button"
-            id="toggleFormButton">
-            + Registrar ingreso
-          </button>
+          <h2>Agregar ingreso</h2>   
         </div>
 
 <div class="income-actions">
@@ -1268,10 +1262,7 @@ const fuentes = agruparPorFuente(ingresosDelMes);
       document.getElementById("mensaje").textContent = "";
     }
 
-    document.getElementById("toggleFormButton")
-      .addEventListener("click", abrirFormulario);
-
-    document.getElementById("manualAction")
+      document.getElementById("manualAction")
       .addEventListener("click", abrirFormulario);
 
     document.getElementById("cancelFormButton")
