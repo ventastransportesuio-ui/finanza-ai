@@ -472,27 +472,70 @@ button.income-action .income-action-copy{
         font-size:32px;
       }
     }
-.register-panel{
-  width:100%;
-  box-sizing:border-box;
+#registerPanel{
+  display:none;
+  width:100% !important;
+  max-width:none !important;
+  min-width:0 !important;
+  box-sizing:border-box !important;
+  align-self:stretch !important;
 }
 
-#formIngreso{
-  width:100%;
-  max-width:none;
-  box-sizing:border-box;
+#registerPanel.open{
+  display:block;
 }
 
-#formIngreso .form-grid{
-  width:100%;
+#registerPanel #formIngreso{
+  display:block !important;
+  width:100% !important;
+  max-width:none !important;
+  min-width:0 !important;
+  margin:0 !important;
+  box-sizing:border-box !important;
 }
 
-#formIngreso input,
-#formIngreso select{
-  width:100%;
-  max-width:none;
-  box-sizing:border-box;
+#registerPanel #formIngreso .form-grid{
+  display:grid !important;
+  width:100% !important;
+  max-width:none !important;
+  min-width:0 !important;
+  grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+  gap:14px !important;
+  box-sizing:border-box !important;
 }
+
+#registerPanel .form-field{
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+}
+
+#registerPanel .form-field.full{
+  grid-column:1 / -1 !important;
+}
+
+#registerPanel input,
+#registerPanel select{
+  display:block !important;
+  width:100% !important;
+  max-width:none !important;
+  min-width:0 !important;
+  box-sizing:border-box !important;
+}
+
+#registerPanel .form-actions{
+  width:100% !important;
+}
+@media (max-width:580px){
+  #registerPanel #formIngreso .form-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  #registerPanel .form-field.full{
+    grid-column:auto !important;
+  }
+}
+    
   </style>
 
  <link rel="stylesheet" href="./assets/styles.css">
