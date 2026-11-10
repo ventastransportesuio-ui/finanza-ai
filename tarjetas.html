@@ -200,7 +200,33 @@ button:hover{
   font-weight:600;
   white-space:nowrap;
 }
-  
+.payment-status{
+  display:inline-flex;
+  align-items:center;
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:10px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.payment-status-pending{
+  border:1px solid #fed7aa;
+  background:#fff7ed;
+  color:#c2410c;
+}
+
+.payment-status-partial{
+  border:1px solid #fde68a;
+  background:#fffbeb;
+  color:#a16207;
+}
+
+.payment-status-paid{
+  border:1px solid #bbf7d0;
+  background:#f0fdf4;
+  color:#15803d;
+}  
 @media (max-width:900px){
   .cards-stats{
     grid-template-columns:repeat(2, minmax(0, 1fr));
@@ -467,13 +493,14 @@ Gestión centralizada de tarjetas del hogar.
   <th>Disponible</th>
   <th>Pago mínimo</th>
   <th>Fecha de pago</th>
+  <th>Estado</th>
 </tr>
 </thead>
 
 <tbody id="tablaTarjetas">
 
 <tr>
-<td colspan="7">
+<td colspan="8">
   Cargando...
 </td>
 </tr>
@@ -496,6 +523,31 @@ const moneda = new Intl.NumberFormat("es-EC", {
   minimumFractionDigits: 2
 });
 
+function obtenerEstadoPago(valor) {
+  const estado = String(valor || "pendiente")
+    .trim()
+    .toLowerCase();
+
+  if (estado === "pagada") {
+    return {
+      clase: "payment-status-paid",
+      texto: "Pagada"
+    };
+  }
+
+  if (estado === "parcial") {
+    return {
+      clase: "payment-status-partial",
+      texto: "Pago parcial"
+    };
+  }
+
+  return {
+    clase: "payment-status-pending",
+    texto: "Pendiente"
+  };
+}
+  
 function obtenerEstadoVencimiento(valor) {
   if (!valor) {
     return {
@@ -699,7 +751,7 @@ document.getElementById("pagoMinimo").textContent =
 
     tabla.innerHTML = `
       <tr>
-        <td colspan="7">
+        <td colspan="8">
   No existen tarjetas registradas
 </td>
       </tr>
@@ -713,7 +765,9 @@ document.getElementById("pagoMinimo").textContent =
 tarjetas.forEach((item) => {
   const estadoVencimiento =
     obtenerEstadoVencimiento(item.fecha_pago);
-
+  const estadoPago =
+    obtenerEstadoPago(item.estado_pago);
+ 
   tabla.innerHTML += `
     <tr>
       <td>
@@ -765,6 +819,12 @@ tarjetas.forEach((item) => {
         : ""
     }
   </div>
+</td>
+<td>
+  <span
+    class="payment-status ${estadoPago.clase}">
+    ${escaparHTML(estadoPago.texto)}
+  </span>
 </td>
     </tr>
   `;
