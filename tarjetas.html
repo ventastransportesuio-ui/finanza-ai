@@ -125,6 +125,28 @@ button:hover{
   gap:10px;
   margin-top:16px;
 }
+.cards-section-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+}
+
+.cards-section-header h2{
+  margin:0;
+}
+
+.cards-form-panel{
+  display:none;
+  margin-top:18px;
+  padding-top:18px;
+  border-top:1px solid #e4eaf2;
+}
+
+.cards-form-panel.open{
+  display:block;
+}
+
 @media (max-width:900px){
   .cards-stats{
     grid-template-columns:repeat(2, minmax(0, 1fr));
@@ -189,9 +211,24 @@ Gestión centralizada de tarjetas del hogar.
 
 <div class="cards-section">
 
-<h2>➕ Registrar Tarjeta</h2>
+<div class="cards-section-header">
+  <h2>Registrar tarjeta</h2>
 
-<form id="formTarjeta">
+  <button
+    type="button"
+    class="secondary-button"
+    id="toggleCardForm"
+    aria-controls="cardFormPanel"
+    aria-expanded="false">
+    + Registrar tarjeta
+  </button>
+</div>
+
+<div
+  class="cards-form-panel"
+  id="cardFormPanel">
+
+  <form id="formTarjeta">
 
   <div class="cards-form-grid">
 
