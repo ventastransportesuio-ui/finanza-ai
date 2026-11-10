@@ -147,6 +147,46 @@ button:hover{
   display:block;
 }
 
+.payment-date{
+  display:inline-flex;
+  align-items:center;
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:10px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.payment-date-overdue{
+  border:1px solid #fecaca;
+  background:#fef2f2;
+  color:#b91c1c;
+}
+
+.payment-date-urgent{
+  border:1px solid #fed7aa;
+  background:#fff7ed;
+  color:#c2410c;
+}
+
+.payment-date-warning{
+  border:1px solid #fde68a;
+  background:#fffbeb;
+  color:#a16207;
+}
+
+.payment-date-safe{
+  border:1px solid #bbf7d0;
+  background:#f0fdf4;
+  color:#15803d;
+}
+
+.payment-date-empty{
+  border:1px solid #e2e8f0;
+  background:#f8fafc;
+  color:#64748b;
+}
+  
 @media (max-width:900px){
   .cards-stats{
     grid-template-columns:repeat(2, minmax(0, 1fr));
@@ -424,6 +464,82 @@ const moneda = new Intl.NumberFormat("es-EC", {
   minimumFractionDigits: 2
 });
 
+function obtenerEstadoVencimiento(valor) {
+  if (!valor) {
+    return {
+      clase: "payment-date-empty",
+      texto: "Sin definir"
+    };
+  }
+
+  const partes = String(valor).split("-");
+
+  if (partes.length !== 3) {
+    return {
+      clase: "payment-date-empty",
+      texto: "Fecha inválida"
+    };
+  }
+
+  const anio = Number(partes[0]);
+  const mes = Number(partes[1]) - 1;
+  const dia = Number(partes[2]);
+
+  const fechaPago = new Date(anio, mes, dia);
+
+  if (Number.isNaN(fechaPago.getTime())) {
+    return {
+      clase: "payment-date-empty",
+      texto: "Fecha inválida"
+    };
+  }
+
+  const hoy = new Date();
+
+  hoy.setHours(0, 0, 0, 0);
+  fechaPago.setHours(0, 0, 0, 0);
+
+  const milisegundosPorDia =
+    1000 * 60 * 60 * 24;
+
+  const diasRestantes = Math.round(
+    (fechaPago - hoy) / milisegundosPorDia
+  );
+
+  if (diasRestantes < 0) {
+    return {
+      clase: "payment-date-overdue",
+      texto: "Vencida"
+    };
+  }
+
+  if (diasRestantes === 0) {
+    return {
+      clase: "payment-date-urgent",
+      texto: "Vence hoy"
+    };
+  }
+
+  if (diasRestantes <= 3) {
+    return {
+      clase: "payment-date-urgent",
+      texto: `Vence en ${diasRestantes} días`
+    };
+  }
+
+  if (diasRestantes <= 7) {
+    return {
+      clase: "payment-date-warning",
+      texto: `Vence en ${diasRestantes} días`
+    };
+  }
+
+  return {
+    clase: "payment-date-safe",
+    texto: `Faltan ${diasRestantes} días`
+  };
+}
+  
 function formatearFecha(valor) {
   if (!valor) {
     return "Sin definir";
@@ -560,6 +676,9 @@ document.getElementById("pagoMinimo").textContent =
     return;
   }
 
+const estadoVencimiento =
+  obtenerEstadoVencimiento(item.fecha_pago);
+  
   tabla.innerHTML = '';
 
   tarjetas.forEach((item) => {
@@ -584,8 +703,14 @@ document.getElementById("pagoMinimo").textContent =
         ${moneda.format(Number(item.pago_minimo || 0))}
       </td>
       <td>
-        ${escaparHTML(formatearFecha(item.fecha_pago))}
-      </td>
+  <span
+    class="payment-date ${estadoVencimiento.clase}"
+    title="${escaparHTML(
+      formatearFecha(item.fecha_pago)
+    )}">
+    ${escaparHTML(estadoVencimiento.texto)}
+  </span>
+</td>
     </tr>
   `;
 });
