@@ -64,14 +64,13 @@ export async function onRequestPost(context) {
         fecha_corte,
         fecha_pago,
         tasa_interes,
-        saldo_diferido,
-        cuotas_pendientes,
-        observaciones
+       saldo_diferido,
+      cuotas_pendientes
       )
       VALUES (
-        ?, ?, ?, ?, ?, ?, ?, ?,
-        ?, ?, ?, ?, ?, ?, ?, ?
-      )
+  ?, ?, ?, ?, ?, ?, ?, ?,
+  ?, ?, ?, ?, ?, ?, ?
+)
     `)
       .bind(
         id,
@@ -86,10 +85,10 @@ export async function onRequestPost(context) {
         body.pago_total,
         body.fecha_corte || null,
         body.fecha_pago || null,
-        body.tasa_interes ?? 0,
+       body.tasa_interes ?? 0,
         body.saldo_diferido ?? 0,
-        body.cuotas_pendientes ?? 0,
-        body.observaciones || ""
+        body.cuotas_pendientes ?? 0
+
       )
       .run();
 
