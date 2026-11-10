@@ -557,6 +557,45 @@ document.getElementById("pagoMinimo").textContent =
 
 }
 
+const botonFormulario =
+  document.getElementById("toggleCardForm");
+
+const panelFormulario =
+  document.getElementById("cardFormPanel");
+
+botonFormulario.addEventListener("click", () => {
+  const estaAbierto =
+    panelFormulario.classList.contains("open");
+
+  if (estaAbierto) {
+    panelFormulario.classList.remove("open");
+
+    botonFormulario.setAttribute(
+      "aria-expanded",
+      "false"
+    );
+
+    botonFormulario.textContent =
+      "+ Registrar tarjeta";
+
+    return;
+  }
+
+  panelFormulario.classList.add("open");
+
+  botonFormulario.setAttribute(
+    "aria-expanded",
+    "true"
+  );
+
+  botonFormulario.textContent =
+    "Cerrar formulario";
+
+  document
+    .getElementById("entidad_financiera")
+    .focus();
+});
+  
 document
   .getElementById("formTarjeta")
   .addEventListener("submit", async (e) => {
