@@ -676,45 +676,56 @@ document.getElementById("pagoMinimo").textContent =
     return;
   }
 
-const estadoVencimiento =
-  obtenerEstadoVencimiento(item.fecha_pago);
-  
-  tabla.innerHTML = '';
+ tabla.innerHTML = "";
 
-  tarjetas.forEach((item) => {
+tarjetas.forEach((item) => {
+  const estadoVencimiento =
+    obtenerEstadoVencimiento(item.fecha_pago);
+
   tabla.innerHTML += `
     <tr>
       <td>
         ${escaparHTML(item.entidad_financiera)}
       </td>
+
       <td>
         ${escaparHTML(item.nombre_tarjeta)}
       </td>
+
       <td>
         ${moneda.format(Number(item.cupo || 0))}
       </td>
+
       <td>
-        ${moneda.format(Number(item.saldo_actual || 0))}
+        ${moneda.format(
+          Number(item.saldo_actual || 0)
+        )}
       </td>
+
       <td>
-        ${moneda.format(Number(item.cupo_disponible || 0))}
+        ${moneda.format(
+          Number(item.cupo_disponible || 0)
+        )}
       </td>
+
       <td>
-        ${moneda.format(Number(item.pago_minimo || 0))}
+        ${moneda.format(
+          Number(item.pago_minimo || 0)
+        )}
       </td>
+
       <td>
-  <span
-    class="payment-date ${estadoVencimiento.clase}"
-    title="${escaparHTML(
-      formatearFecha(item.fecha_pago)
-    )}">
-    ${escaparHTML(estadoVencimiento.texto)}
-  </span>
-</td>
+        <span
+          class="payment-date ${estadoVencimiento.clase}"
+          title="${escaparHTML(
+            formatearFecha(item.fecha_pago)
+          )}">
+          ${escaparHTML(estadoVencimiento.texto)}
+        </span>
+      </td>
     </tr>
   `;
 });
-
 }
 
 const botonFormulario =
