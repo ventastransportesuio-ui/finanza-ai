@@ -388,20 +388,21 @@ Gestión centralizada de tarjetas del hogar.
 
 <thead>
 <tr>
-<th>Entidad</th>
-<th>Tarjeta</th>
-<th>Cupo</th>
-<th>Saldo</th>
-<th>Disponible</th>
-<th>Pago Mínimo</th>
+  <th>Entidad</th>
+  <th>Tarjeta</th>
+  <th>Cupo</th>
+  <th>Saldo</th>
+  <th>Disponible</th>
+  <th>Pago mínimo</th>
+  <th>Fecha de pago</th>
 </tr>
 </thead>
 
 <tbody id="tablaTarjetas">
 
 <tr>
-<td colspan="6">
-Cargando...
+<td colspan="7">
+  Cargando...
 </td>
 </tr>
 
@@ -520,9 +521,9 @@ document.getElementById("pagoMinimo").textContent =
 
     tabla.innerHTML = `
       <tr>
-        <td colspan="6">
-          No existen tarjetas registradas
-        </td>
+        <td colspan="7">
+  No existen tarjetas registradas
+</td>
       </tr>
     `;
 
@@ -551,6 +552,9 @@ document.getElementById("pagoMinimo").textContent =
       </td>
       <td>
         ${moneda.format(Number(item.pago_minimo || 0))}
+      </td>
+      <td>
+        ${escaparHTML(item.fecha_pago || "Sin definir")}
       </td>
     </tr>
   `;
