@@ -548,7 +548,110 @@ function obtenerEstadoPago(valor) {
   };
 }
   
-function obtenerEstadoVencimiento(valor) {
+function obtenerEstadoVencimiento(
+  valor,
+  estadoPago
+) {
+  const estado = String(
+    estadoPago || "pendiente"
+  )
+    .trim()
+    .toLowerCase();
+
+  if (estado === "pagada") {
+    return {
+      clase: "payment-date-safe",
+      texto: "Pago realizado"
+    };
+  }
+
+  if (!valor) {
+    return {
+      clase: "payment-date-empty",
+      texto: "Sin definir"
+    };
+  }
+
+  const partes = String(valor).split("-");
+
+  if (partes.length !== 3) {
+    return {
+      clase: "payment-date-empty",
+      texto: "Fecha inválida"
+    };
+  }
+
+  const anio = Number(partes[0]);
+  const mes = Number(partes[1]) - 1;
+  const dia = Number(partes[2]);
+
+  const fechaPago = new Date(
+    anio,
+    mes,
+    dia
+  );
+
+  if (Number.isNaN(fechaPago.getTime())) {
+    return {
+      clase: "payment-date-empty",
+      texto: "Fecha inválida"
+    };
+  }
+
+  const hoy = new Date();
+
+  hoy.setHours(0, 0, 0, 0);
+  fechaPago.setHours(0, 0, 0, 0);
+
+  const milisegundosPorDia =
+    1000 * 60 * 60 * 24;
+
+  const diasRestantes = Math.round(
+    (fechaPago - hoy) /
+    milisegundosPorDia
+  );
+
+  if (diasRestantes < 0) {
+    return {
+      clase: "payment-date-overdue",
+      texto:
+        estado === "parcial"
+          ? "Pago parcial vencido"
+          : "Vencida"
+    };
+  }
+
+  if (diasRestantes === 0) {
+    return {
+      clase: "payment-date-urgent",
+      texto:
+        estado === "parcial"
+          ? "Pago parcial, vence hoy"
+          : "Vence hoy"
+    };
+  }
+
+  if (diasRestantes <= 3) {
+    return {
+      clase: "payment-date-urgent",
+      texto: `Vence en ${diasRestantes} ${
+        diasRestantes === 1 ? "día" : "días"
+      }`
+    };
+  }
+
+  if (diasRestantes <= 7) {
+    return {
+      clase: "payment-date-warning",
+      texto: `Vence en ${diasRestantes} días`
+    };
+  }
+
+  return {
+    clase: "payment-date-safe",
+    texto: `Faltan ${diasRestantes} días`
+  };
+}
   if (!valor) {
     return {
       clase: "payment-date-empty",
@@ -764,7 +867,10 @@ document.getElementById("pagoMinimo").textContent =
 
 tarjetas.forEach((item) => {
   const estadoVencimiento =
-    obtenerEstadoVencimiento(item.fecha_pago);
+  obtenerEstadoVencimiento(
+    item.fecha_pago,
+    item.estado_pago
+  );
   const estadoPago =
     obtenerEstadoPago(item.estado_pago);
  
