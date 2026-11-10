@@ -513,9 +513,7 @@ if (!hogarActualId) {
   return;
 }
 
-await fetch('/api/tarjetas', {
-
-
+const response = await fetch("/api/tarjetas", {
     method:'POST',
 
     headers:{
@@ -568,9 +566,22 @@ await fetch('/api/tarjetas', {
     })
 
   });
+let resultado;
 
-  document.getElementById('mensaje').innerHTML =
-    '✅ Tarjeta registrada correctamente';
+try {
+  resultado = await response.json();
+} catch {
+  resultado = {};
+}
+
+if (!response.ok || resultado.success === false) {
+  throw new Error(
+    resultado.error ||
+    "No se pudo guardar la tarjeta."
+  );
+}
+  mensaje.textContent =
+  "Tarjeta registrada correctamente.";
 
   document.getElementById('formTarjeta').reset();
 
