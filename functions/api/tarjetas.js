@@ -46,7 +46,18 @@ export async function onRequestPost(context) {
     }
 
     const body = await context.request.json();
+  const estadosPermitidos = [
+  "pendiente",
+  "pagada",
+  "parcial"
+];
 
+const estadoPago = estadosPermitidos.includes(
+  String(body.estado_pago || "").toLowerCase()
+)
+  ? String(body.estado_pago).toLowerCase()
+  : "pendiente";
+    
     const id = crypto.randomUUID();
 
     const resultado = await DB.prepare(`
@@ -63,13 +74,14 @@ export async function onRequestPost(context) {
         pago_total,
         fecha_corte,
         fecha_pago,
-        tasa_interes,
-       saldo_diferido,
-      cuotas_pendientes
+       tasa_interes,
+        saldo_diferido,
+        cuotas_pendientes,
+        estado_pago
       )
       VALUES (
   ?, ?, ?, ?, ?, ?, ?, ?,
-  ?, ?, ?, ?, ?, ?, ?
+  ?, ?, ?, ?, ?, ?, ?, ?
 )
     `)
       .bind(
@@ -85,9 +97,10 @@ export async function onRequestPost(context) {
         body.pago_total,
         body.fecha_corte || null,
         body.fecha_pago || null,
-       body.tasa_interes ?? 0,
-        body.saldo_diferido ?? 0,
-        body.cuotas_pendientes ?? 0
+      body.tasa_interes ?? 0,
+      body.saldo_diferido ?? 0,
+      body.cuotas_pendientes ?? 0,
+      estadoPago
 
       )
       .run();
