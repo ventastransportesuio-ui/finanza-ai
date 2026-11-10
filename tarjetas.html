@@ -493,7 +493,18 @@ document
 
   e.preventDefault();
 
-  await fetch('/api/tarjetas', {
+const mensaje =
+  document.getElementById("mensaje");
+
+if (!hogarActualId) {
+  mensaje.textContent =
+    "No fue posible identificar el hogar.";
+
+  return;
+}
+
+await fetch('/api/tarjetas', {
+
 
     method:'POST',
 
@@ -503,7 +514,7 @@ document
 
     body:JSON.stringify({
 
-      hogar_id:'hogar-001',
+      hogar_id: hogarActualId,
 
       entidad_financiera:
         document.getElementById('entidad_financiera').value,
