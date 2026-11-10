@@ -90,6 +90,41 @@ button:hover{
   color:green;
   font-weight:bold;
 }
+  .cards-form-grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:14px;
+}
+
+.cards-form-field{
+  min-width:0;
+}
+
+.cards-form-field.full{
+  grid-column:1 / -1;
+}
+
+.cards-form-field label{
+  display:block;
+  margin-bottom:6px;
+  color:#17233a;
+  font-size:11px;
+  font-weight:700;
+}
+
+.cards-form-field input,
+.cards-form-field select{
+  width:100%;
+  max-width:none;
+  box-sizing:border-box;
+}
+
+.cards-form-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:16px;
+}
 @media (max-width:900px){
   .cards-stats{
     grid-template-columns:repeat(2, minmax(0, 1fr));
@@ -97,8 +132,13 @@ button:hover{
 }
 
 @media (max-width:520px){
-  .cards-stats{
+  .cards-stats,
+  .cards-form-grid{
     grid-template-columns:1fr;
+  }
+
+  .cards-form-field.full{
+    grid-column:auto;
   }
 }
 </style>
