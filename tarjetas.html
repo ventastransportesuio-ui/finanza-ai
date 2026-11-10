@@ -22,20 +22,26 @@
   background:#fff;
 }
 
-.stats{
-  display:flex;
-  flex-wrap:wrap;
-  gap:15px;
+.cards-stats{
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+  gap:14px;
 }
 
-.stat{
-  background:#eef2ff;
-  padding:15px;
-  border-radius:10px;
-  min-width:200px;
+.cards-stat{
+  min-width:0;
+  padding:16px;
+  border:1px solid #dce7f7;
+  border-radius:12px;
+  background:#f4f9ff;
 }
 
 .cards-stat-value{
+   margin-top:5px;
+  color:#66738a;
+  font-size:11px;
+  font-weight:600;
+}
   color:#17233a;
   font-size:28px;
   font-weight:700;
@@ -84,7 +90,17 @@ button:hover{
   color:green;
   font-weight:bold;
 }
+@media (max-width:900px){
+  .cards-stats{
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+  }
+}
 
+@media (max-width:520px){
+  .cards-stats{
+    grid-template-columns:1fr;
+  }
+}
 </style>
 </head>
 
@@ -110,26 +126,26 @@ Gestión centralizada de tarjetas del hogar.
 
 <h2>📊 Resumen de Tarjetas</h2>
 
-<div class="stats">
+<div class="cards-stats">
 
-<div class="stat">
+<div class="cards-stat">
 <div class="cards-stat-value" id="cupoTotal">$0</div>
-<div>Cupo Total</div>
+<div class="cards-stat-label">Cupo Total</div>
 </div>
 
-<div class="stat">
+<div class="cards-stat">
 <div class="cards-stat-value" id="saldoUtilizado">$0</div>
-<div>Saldo Utilizado</div>
+<div class="cards-stat-label">Saldo Utilizado</div>
 </div>
 
-<div class="stat">
+<div class="cards-stat">
 <div class="cards-stat-value" id="cupoDisponible">$0</div>
-<div>Cupo Disponible</div>
+<div class="cards-stat-label">Cupo Disponible</div>
 </div>
 
-<div class="stat">
+<div class="cards-stat">
 <div class="cards-stat-value" id="pagoMinimo">$0</div>
-<div>Pago Mínimo</div>
+<div class="cards-stat-label">Pago Mínimo</div>
 </div>
 
 </div>
