@@ -301,6 +301,7 @@ Gestión centralizada de tarjetas del hogar.
         min="0"
         step="0.01"
         placeholder="0.00"
+        readonly
         required>
     </div>
 
@@ -595,6 +596,47 @@ botonFormulario.addEventListener("click", () => {
     .getElementById("entidad_financiera")
     .focus();
 });
+
+const campoCupo =
+  document.getElementById("cupo");
+
+const campoSaldoActual =
+  document.getElementById("saldo_actual");
+
+const campoCupoDisponible =
+  document.getElementById("cupo_disponible");
+
+function actualizarCupoDisponible() {
+  const cupo = Number(campoCupo.value);
+  const saldoActual = Number(campoSaldoActual.value);
+
+  if (
+    !Number.isFinite(cupo) ||
+    !Number.isFinite(saldoActual) ||
+    cupo < 0 ||
+    saldoActual < 0
+  ) {
+    campoCupoDisponible.value = "";
+    return;
+  }
+
+  const disponible = cupo - saldoActual;
+
+  campoCupoDisponible.value =
+    disponible >= 0
+      ? disponible.toFixed(2)
+      : "0.00";
+}
+
+campoCupo.addEventListener(
+  "input",
+  actualizarCupoDisponible
+);
+
+campoSaldoActual.addEventListener(
+  "input",
+  actualizarCupoDisponible
+);
   
 document
   .getElementById("formTarjeta")
