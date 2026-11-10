@@ -415,7 +415,25 @@ Gestión centralizada de tarjetas del hogar.
         step="0.01"
         placeholder="Ej. 15.50">
     </div>
+<div class="cards-form-field">
+  <label for="estado_pago">
+    Estado de pago
+  </label>
 
+  <select id="estado_pago" required>
+    <option value="pendiente">
+      Pendiente
+    </option>
+
+    <option value="parcial">
+      Pago parcial
+    </option>
+
+    <option value="pagada">
+      Pagada
+    </option>
+  </select>
+</div>
   </div>
 
   <div class="cards-form-actions">
@@ -889,6 +907,23 @@ const fechaCorte =
 const fechaPago =
   document.getElementById("fecha_pago").value;
 
+const estadoPago =
+  document.getElementById("estado_pago").value;
+
+const estadosPermitidos = [
+  "pendiente",
+  "parcial",
+  "pagada"
+];
+
+if (!estadosPermitidos.includes(estadoPago)) {
+  mensaje.textContent =
+    "Selecciona un estado de pago válido.";
+
+  document.getElementById("estado_pago").focus();
+  return;
+}
+    
 if (
   entidadFinanciera.length < 2 ||
   entidadFinanciera.length > 120
@@ -1086,22 +1121,23 @@ titular: titular,
 
          cupo: cupo,
 
-saldo_actual: saldoActual,
+        saldo_actual: saldoActual,
 
-cupo_disponible: cupoDisponible,
+        cupo_disponible: cupoDisponible,
 
-pago_minimo: pagoMinimo,
+        pago_minimo: pagoMinimo,
 
-pago_total: pagoTotal,
+        pago_total: pagoTotal,
 
          fecha_corte: fechaCorte,
 
-fecha_pago: fechaPago,
+        fecha_pago: fechaPago,
 
           tasa_interes: tasaInteres,
           
          saldo_diferido: 0,
-cuotas_pendientes: 0
+        cuotas_pendientes: 0,
+        estado_pago: estadoPago
         })
       });
 
