@@ -385,6 +385,15 @@ const moneda = new Intl.NumberFormat("es-EC", {
   currency: "USD",
   minimumFractionDigits: 2
 });
+
+function escaparHTML(valor) {
+  return String(valor ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}  
   
 async function cargarContextoFinanciero() {
   const respuestaHogares =
@@ -485,28 +494,30 @@ document.getElementById("pagoMinimo").textContent =
 
   tabla.innerHTML = '';
 
-  tarjetas.forEach(item => {
-
-    tabla.innerHTML += `
-      <tr>
-        <td>${item.entidad_financiera}</td>
-        <td>${item.nombre_tarjeta}</td>
+  tarjetas.forEach((item) => {
+  tabla.innerHTML += `
+    <tr>
       <td>
-  ${moneda.format(Number(item.cupo || 0))}
-</td>
-<td>
-  ${moneda.format(Number(item.saldo_actual || 0))}
-</td>
-<td>
-  ${moneda.format(Number(item.cupo_disponible || 0))}
-</td>
-<td>
-  ${moneda.format(Number(item.pago_minimo || 0))}
-</td>
-      </tr>
-    `;
-
-  });
+        ${escaparHTML(item.entidad_financiera)}
+      </td>
+      <td>
+        ${escaparHTML(item.nombre_tarjeta)}
+      </td>
+      <td>
+        ${moneda.format(Number(item.cupo || 0))}
+      </td>
+      <td>
+        ${moneda.format(Number(item.saldo_actual || 0))}
+      </td>
+      <td>
+        ${moneda.format(Number(item.cupo_disponible || 0))}
+      </td>
+      <td>
+        ${moneda.format(Number(item.pago_minimo || 0))}
+      </td>
+    </tr>
+  `;
+});
 
 }
 
