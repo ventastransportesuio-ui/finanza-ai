@@ -769,7 +769,7 @@ fecha_pago: fechaPago,
         })
       });
 
-      const textoRespuesta = await response.text();
+    const textoRespuesta = await response.text();
 
 let resultado = {};
 
@@ -777,20 +777,26 @@ if (textoRespuesta) {
   try {
     resultado = JSON.parse(textoRespuesta);
   } catch {
-    resultado = {
-      error: textoRespuesta
-    };
+    resultado = {};
   }
 }
 
 if (!response.ok || resultado.success === false) {
-  const detalleError =
+  const esErrorCloudflare =
+    textoRespuesta.includes("Worker threw exception") ||
+    textoRespuesta.includes("Error 1101");
+
+  if (esErrorCloudflare) {
+    throw new Error(
+      "La API de tarjetas presentó un error interno."
+    );
+  }
+
+  throw new Error(
     resultado.error ||
     resultado.message ||
-    textoRespuesta ||
-    `Error ${response.status} al guardar la tarjeta.`;
-
-  throw new Error(detalleError);
+    `Error ${response.status} al guardar la tarjeta.`
+  );
 }
       mensaje.textContent =
         "Tarjeta registrada correctamente.";
