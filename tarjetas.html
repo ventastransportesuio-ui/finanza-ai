@@ -415,14 +415,24 @@ async function cargarContextoFinanciero() {
 }
 
 async function cargarTarjetas() {
-async function cargarTarjetas() {
-
   const response =
-    await fetch('/api/tarjetas');
+    await fetch("/api/tarjetas");
 
-  const tarjetas =
+  if (!response.ok) {
+    throw new Error(
+      "No fue posible consultar las tarjetas."
+    );
+  }
+
+  const resultado =
     await response.json();
 
+  const tarjetas = Array.isArray(resultado)
+    ? resultado
+    : Array.isArray(resultado.data)
+      ? resultado.data
+      : [];
+  
   let cupoTotal = 0;
   let saldoUtilizado = 0;
   let cupoDisponible = 0;
