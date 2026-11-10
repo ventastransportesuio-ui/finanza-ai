@@ -528,7 +528,90 @@ document
 
   return;
 }
+const entidadFinanciera =
+  document
+    .getElementById("entidad_financiera")
+    .value
+    .trim();
 
+const nombreTarjeta =
+  document
+    .getElementById("nombre_tarjeta")
+    .value
+    .trim();
+
+const titular =
+  document
+    .getElementById("titular")
+    .value
+    .trim();
+
+const fechaCorte =
+  document.getElementById("fecha_corte").value;
+
+const fechaPago =
+  document.getElementById("fecha_pago").value;
+
+if (
+  entidadFinanciera.length < 2 ||
+  entidadFinanciera.length > 120
+) {
+  mensaje.textContent =
+    "La entidad financiera debe tener entre 2 y 120 caracteres.";
+
+  document.getElementById("entidad_financiera").focus();
+  return;
+}
+
+if (
+  nombreTarjeta.length < 2 ||
+  nombreTarjeta.length > 80
+) {
+  mensaje.textContent =
+    "El nombre de la tarjeta debe tener entre 2 y 80 caracteres.";
+
+  document.getElementById("nombre_tarjeta").focus();
+  return;
+}
+
+if (
+  titular.length < 2 ||
+  titular.length > 120
+) {
+  mensaje.textContent =
+    "El nombre del titular debe tener entre 2 y 120 caracteres.";
+
+  document.getElementById("titular").focus();
+  return;
+}
+
+if (fechaCorte) {
+  const fechaCorteValida =
+    new Date(`${fechaCorte}T00:00:00`);
+
+  if (Number.isNaN(fechaCorteValida.getTime())) {
+    mensaje.textContent =
+      "La fecha de corte no es válida.";
+
+    document.getElementById("fecha_corte").focus();
+    return;
+  }
+}
+
+if (fechaPago) {
+  const fechaPagoValida =
+    new Date(`${fechaPago}T00:00:00`);
+
+  if (Number.isNaN(fechaPagoValida.getTime())) {
+    mensaje.textContent =
+      "La fecha máxima de pago no es válida.";
+
+    document.getElementById("fecha_pago").focus();
+    return;
+  }
+}
+
+const cupo = Number(
 const cupo = Number(
   document.getElementById("cupo").value
 );
@@ -659,23 +742,11 @@ mensaje.textContent = "Guardando tarjeta...";
         body: JSON.stringify({
           hogar_id: hogarActualId,
 
-          entidad_financiera:
-            document
-              .getElementById("entidad_financiera")
-              .value
-              .trim(),
+         entidad_financiera: entidadFinanciera,
 
-          nombre_tarjeta:
-            document
-              .getElementById("nombre_tarjeta")
-              .value
-              .trim(),
+nombre_tarjeta: nombreTarjeta,
 
-          titular:
-            document
-              .getElementById("titular")
-              .value
-              .trim(),
+titular: titular,
 
          cupo: cupo,
 
@@ -687,15 +758,9 @@ pago_minimo: pagoMinimo,
 
 pago_total: pagoTotal,
 
-          fecha_corte:
-            document
-              .getElementById("fecha_corte")
-              .value,
+         fecha_corte: fechaCorte,
 
-          fecha_pago:
-            document
-              .getElementById("fecha_pago")
-              .value,
+fecha_pago: fechaPago,
 
           tasa_interes: tasaInteres,
           
