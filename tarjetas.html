@@ -652,81 +652,7 @@ function obtenerEstadoVencimiento(
     texto: `Faltan ${diasRestantes} días`
   };
 }
-  if (!valor) {
-    return {
-      clase: "payment-date-empty",
-      texto: "Sin definir"
-    };
-  }
 
-  const partes = String(valor).split("-");
-
-  if (partes.length !== 3) {
-    return {
-      clase: "payment-date-empty",
-      texto: "Fecha inválida"
-    };
-  }
-
-  const anio = Number(partes[0]);
-  const mes = Number(partes[1]) - 1;
-  const dia = Number(partes[2]);
-
-  const fechaPago = new Date(anio, mes, dia);
-
-  if (Number.isNaN(fechaPago.getTime())) {
-    return {
-      clase: "payment-date-empty",
-      texto: "Fecha inválida"
-    };
-  }
-
-  const hoy = new Date();
-
-  hoy.setHours(0, 0, 0, 0);
-  fechaPago.setHours(0, 0, 0, 0);
-
-  const milisegundosPorDia =
-    1000 * 60 * 60 * 24;
-
-  const diasRestantes = Math.round(
-    (fechaPago - hoy) / milisegundosPorDia
-  );
-
-  if (diasRestantes < 0) {
-    return {
-      clase: "payment-date-overdue",
-      texto: "Vencida"
-    };
-  }
-
-  if (diasRestantes === 0) {
-    return {
-      clase: "payment-date-urgent",
-      texto: "Vence hoy"
-    };
-  }
-
-  if (diasRestantes <= 3) {
-    return {
-      clase: "payment-date-urgent",
-      texto: `Vence en ${diasRestantes} días`
-    };
-  }
-
-  if (diasRestantes <= 7) {
-    return {
-      clase: "payment-date-warning",
-      texto: `Vence en ${diasRestantes} días`
-    };
-  }
-
-  return {
-    clase: "payment-date-safe",
-    texto: `Faltan ${diasRestantes} días`
-  };
-}
-  
 function formatearFecha(valor) {
   if (!valor) {
     return "Sin definir";
@@ -742,7 +668,11 @@ function formatearFecha(valor) {
   const mes = Number(partes[1]) - 1;
   const dia = Number(partes[2]);
 
-  const fecha = new Date(anio, mes, dia);
+  const fecha = new Date(
+    anio,
+    mes,
+    dia
+  );
 
   if (Number.isNaN(fecha.getTime())) {
     return String(valor);
@@ -756,7 +686,7 @@ function formatearFecha(valor) {
     .format(fecha)
     .replace(".", "");
 }
-  
+
 function escaparHTML(valor) {
   return String(valor ?? "")
     .replaceAll("&", "&amp;")
@@ -764,39 +694,6 @@ function escaparHTML(valor) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
-}  
-  
-async function cargarContextoFinanciero() {
-  const respuestaHogares =
-    await fetch("/api/hogares");
-
-  if (!respuestaHogares.ok) {
-    throw new Error(
-      "No fue posible obtener los datos del hogar."
-    );
-  }
-
-  const resultadoHogares =
-    await respuestaHogares.json();
-
-  const hogares = Array.isArray(resultadoHogares)
-    ? resultadoHogares
-    : Array.isArray(resultadoHogares.data)
-      ? resultadoHogares.data
-      : [];
-
-  const hogarActivo =
-    hogares.find(
-      (item) => item.status === "active"
-    ) || hogares[0];
-
-  if (!hogarActivo) {
-    throw new Error(
-      "No existe un hogar configurado."
-    );
-  }
-
-  hogarActualId = hogarActivo.id;
 }
 
 async function cargarTarjetas() {
