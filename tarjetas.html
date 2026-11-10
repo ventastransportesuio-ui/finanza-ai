@@ -380,6 +380,12 @@ Cargando...
 
 let hogarActualId = null;
 
+const moneda = new Intl.NumberFormat("es-EC", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 2
+});
+  
 async function cargarContextoFinanciero() {
   const respuestaHogares =
     await fetch("/api/hogares");
@@ -449,17 +455,17 @@ async function cargarTarjetas() {
 
   });
 
-  document.getElementById('cupoTotal').textContent =
-    '$' + cupoTotal.toFixed(2);
+ document.getElementById("cupoTotal").textContent =
+  moneda.format(cupoTotal);
 
-  document.getElementById('saldoUtilizado').textContent =
-    '$' + saldoUtilizado.toFixed(2);
+document.getElementById("saldoUtilizado").textContent =
+  moneda.format(saldoUtilizado);
 
-  document.getElementById('cupoDisponible').textContent =
-    '$' + cupoDisponible.toFixed(2);
+document.getElementById("cupoDisponible").textContent =
+  moneda.format(cupoDisponible);
 
-  document.getElementById('pagoMinimo').textContent =
-    '$' + pagoMinimo.toFixed(2);
+document.getElementById("pagoMinimo").textContent =
+  moneda.format(pagoMinimo);
 
   const tabla =
     document.getElementById('tablaTarjetas');
@@ -485,10 +491,18 @@ async function cargarTarjetas() {
       <tr>
         <td>${item.entidad_financiera}</td>
         <td>${item.nombre_tarjeta}</td>
-        <td>$${item.cupo}</td>
-        <td>$${item.saldo_actual}</td>
-        <td>$${item.cupo_disponible}</td>
-        <td>$${item.pago_minimo}</td>
+      <td>
+  ${moneda.format(Number(item.cupo || 0))}
+</td>
+<td>
+  ${moneda.format(Number(item.saldo_actual || 0))}
+</td>
+<td>
+  ${moneda.format(Number(item.cupo_disponible || 0))}
+</td>
+<td>
+  ${moneda.format(Number(item.pago_minimo || 0))}
+</td>
       </tr>
     `;
 
