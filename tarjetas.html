@@ -522,14 +522,129 @@ document
       return;
     }
 
-    if (!hogarActualId) {
-      mensaje.textContent =
-        "No fue posible identificar el hogar.";
+   if (!hogarActualId) {
+  mensaje.textContent =
+    "No fue posible identificar el hogar.";
 
-      return;
-    }
+  return;
+}
 
-    mensaje.textContent = "Guardando tarjeta...";
+const cupo = Number(
+  document.getElementById("cupo").value
+);
+
+const saldoActual = Number(
+  document.getElementById("saldo_actual").value
+);
+
+const cupoDisponible = Number(
+  document.getElementById("cupo_disponible").value
+);
+
+const pagoMinimo = Number(
+  document.getElementById("pago_minimo").value
+);
+
+const pagoTotal = Number(
+  document.getElementById("pago_total").value
+);
+
+const tasaInteres = Number(
+  document.getElementById("tasa_interes").value || 0
+);
+
+if (!Number.isFinite(cupo) || cupo <= 0) {
+  mensaje.textContent =
+    "El cupo total debe ser mayor que cero.";
+
+  document.getElementById("cupo").focus();
+  return;
+}
+
+if (
+  !Number.isFinite(saldoActual) ||
+  saldoActual < 0 ||
+  saldoActual > cupo
+) {
+  mensaje.textContent =
+    "El saldo utilizado debe estar entre cero y el cupo total.";
+
+  document.getElementById("saldo_actual").focus();
+  return;
+}
+
+if (
+  !Number.isFinite(cupoDisponible) ||
+  cupoDisponible < 0 ||
+  cupoDisponible > cupo
+) {
+  mensaje.textContent =
+    "El cupo disponible debe estar entre cero y el cupo total.";
+
+  document.getElementById("cupo_disponible").focus();
+  return;
+}
+
+if (
+  Math.abs(
+    cupo - saldoActual - cupoDisponible
+  ) > 0.02
+) {
+  mensaje.textContent =
+    "El saldo utilizado más el cupo disponible debe coincidir con el cupo total.";
+
+  document.getElementById("cupo_disponible").focus();
+  return;
+}
+
+if (
+  !Number.isFinite(pagoMinimo) ||
+  pagoMinimo < 0 ||
+  pagoMinimo > saldoActual
+) {
+  mensaje.textContent =
+    "El pago mínimo no puede superar el saldo utilizado.";
+
+  document.getElementById("pago_minimo").focus();
+  return;
+}
+
+if (
+  !Number.isFinite(pagoTotal) ||
+  pagoTotal < 0 ||
+  pagoTotal > saldoActual
+) {
+  mensaje.textContent =
+    "El pago total no puede superar el saldo utilizado.";
+
+  document.getElementById("pago_total").focus();
+  return;
+}
+
+if (
+  pagoTotal > 0 &&
+  pagoMinimo > pagoTotal
+) {
+  mensaje.textContent =
+    "El pago mínimo no puede superar el pago total.";
+
+  document.getElementById("pago_minimo").focus();
+  return;
+}
+
+if (
+  !Number.isFinite(tasaInteres) ||
+  tasaInteres < 0 ||
+  tasaInteres > 100
+) {
+  mensaje.textContent =
+    "La tasa de interés debe estar entre 0 y 100.";
+
+  document.getElementById("tasa_interes").focus();
+  return;
+}
+
+mensaje.textContent = "Guardando tarjeta...";
     botonGuardar.disabled = true;
     botonGuardar.textContent = "Guardando...";
 
@@ -562,36 +677,15 @@ document
               .value
               .trim(),
 
-          cupo:
-            Number(
-              document.getElementById("cupo").value
-            ),
+         cupo: cupo,
 
-          saldo_actual:
-            Number(
-              document.getElementById("saldo_actual").value
-            ),
+saldo_actual: saldoActual,
 
-          cupo_disponible:
-            Number(
-              document
-                .getElementById("cupo_disponible")
-                .value
-            ),
+cupo_disponible: cupoDisponible,
 
-          pago_minimo:
-            Number(
-              document
-                .getElementById("pago_minimo")
-                .value
-            ),
+pago_minimo: pagoMinimo,
 
-          pago_total:
-            Number(
-              document
-                .getElementById("pago_total")
-                .value
-            ),
+pago_total: pagoTotal,
 
           fecha_corte:
             document
@@ -603,13 +697,8 @@ document
               .getElementById("fecha_pago")
               .value,
 
-          tasa_interes:
-            Number(
-              document
-                .getElementById("tasa_interes")
-                .value || 0
-            ),
-
+          tasa_interes: tasaInteres,
+          
           saldo_diferido: 0,
           cuotas_pendientes: 0,
           observaciones: ""
