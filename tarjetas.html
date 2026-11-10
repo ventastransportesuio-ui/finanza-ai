@@ -186,6 +186,20 @@ button:hover{
   background:#f8fafc;
   color:#64748b;
 }
+
+.payment-date-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:5px;
+}
+
+.payment-date-value{
+  color:#66738a;
+  font-size:10px;
+  font-weight:600;
+  white-space:nowrap;
+}
   
 @media (max-width:900px){
   .cards-stats{
@@ -714,15 +728,26 @@ tarjetas.forEach((item) => {
         )}
       </td>
 
-      <td>
-        <span
-          class="payment-date ${estadoVencimiento.clase}"
-          title="${escaparHTML(
-            formatearFecha(item.fecha_pago)
-          )}">
-          ${escaparHTML(estadoVencimiento.texto)}
-        </span>
-      </td>
+<td>
+  <div class="payment-date-wrap">
+    <span
+      class="payment-date ${estadoVencimiento.clase}">
+      ${escaparHTML(estadoVencimiento.texto)}
+    </span>
+
+    ${
+      item.fecha_pago
+        ? `
+          <span class="payment-date-value">
+            ${escaparHTML(
+              formatearFecha(item.fecha_pago)
+            )}
+          </span>
+        `
+        : ""
+    }
+  </div>
+</td>
     </tr>
   `;
 });
