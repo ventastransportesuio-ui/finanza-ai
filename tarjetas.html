@@ -898,11 +898,21 @@ if (!response.ok || resultado.success === false) {
   );
 }
       mensaje.textContent =
-        "Tarjeta registrada correctamente.";
+  "Tarjeta registrada correctamente.";
 
-      formulario.reset();
+formulario.reset();
 
-      await cargarTarjetas();
+panelFormulario.classList.remove("open");
+
+botonFormulario.setAttribute(
+  "aria-expanded",
+  "false"
+);
+
+botonFormulario.textContent =
+  "+ Registrar tarjeta";
+
+await cargarTarjetas();
     } catch (error) {
       console.error(
         "Error al guardar la tarjeta:",
