@@ -378,6 +378,43 @@ Cargando...
 
 <script>
 
+let hogarActualId = null;
+let hogarActualId = null;
+
+async function cargarContextoFinanciero() {
+  const respuestaHogares =
+    await fetch("/api/hogares");
+
+  if (!respuestaHogares.ok) {
+    throw new Error(
+      "No fue posible obtener los datos del hogar."
+    );
+  }
+
+  const resultadoHogares =
+    await respuestaHogares.json();
+
+  const hogares = Array.isArray(resultadoHogares)
+    ? resultadoHogares
+    : Array.isArray(resultadoHogares.data)
+      ? resultadoHogares.data
+      : [];
+
+  const hogarActivo =
+    hogares.find(
+      (item) => item.status === "active"
+    ) || hogares[0];
+
+  if (!hogarActivo) {
+    throw new Error(
+      "No existe un hogar configurado."
+    );
+  }
+
+  hogarActualId = hogarActivo.id;
+}
+
+async function cargarTarjetas() {
 async function cargarTarjetas() {
 
   const response =
@@ -520,7 +557,26 @@ document
 
 });
 
-cargarTarjetas();
+async function iniciarPagina() {
+  const mensaje =
+    document.getElementById("mensaje");
+
+  try {
+    await cargarContextoFinanciero();
+    await cargarTarjetas();
+  } catch (error) {
+    console.error(
+      "Error al iniciar la página de tarjetas:",
+      error
+    );
+
+    mensaje.textContent =
+      error.message ||
+      "No fue posible iniciar la página.";
+  }
+}
+
+iniciarPagina();
 
 </script>
 
